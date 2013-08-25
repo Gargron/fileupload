@@ -5,6 +5,7 @@ namespace FileUpload;
 use FileUpload\PathResolver\PathResolver;
 use FileUpload\FileSystem\FileSystem;
 use FileUpload\Validator\Validator;
+use Psr\Log\LoggerInterface;
 
 class FileUpload {
   /**
@@ -30,6 +31,12 @@ class FileUpload {
    * @var FileSystem
    */
   protected $filesystem;
+
+  /**
+   * Optional logger
+   * @var LoggerInterface
+   */
+  protected $logger;
 
   /**
    * Validators to be run
@@ -61,6 +68,14 @@ class FileUpload {
    */
   public function setFileSystem(FileSystem $fs) {
     $this->filesystem = $fs;
+  }
+
+  /**
+   * Set logger, optionally
+   * @param LoggerInterface $logger
+   */
+  public function setLogger(LoggerInterface $logger) {
+    $this->logger = $logger;
   }
 
   /**
@@ -105,6 +120,15 @@ class FileUpload {
     $size          = $this->getSize();
     $files         = array();
     $upload        = $this->upload;
+
+    if($this->logger) {
+      $this->logger->debug('Processing uploads', array(
+        'content-range' => $content_range,
+        'size'          => $size,
+        'upload'        => $upload,
+        'server'        => $server,
+      ));
+    }
 
     if($upload && is_array($upload['tmp_name'])) {
       foreach($upload['tmp_name'] as $index => $tmp_name) {
