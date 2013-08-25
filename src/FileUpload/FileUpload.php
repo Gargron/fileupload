@@ -126,7 +126,7 @@ class FileUpload {
         'content-range' => $content_range,
         'size'          => $size,
         'upload'        => $upload,
-        'server'        => $server,
+        'server'        => $this->server,
       ));
     }
 
