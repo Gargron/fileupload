@@ -16,7 +16,7 @@ class Simple implements FileSystem {
   }
 
   public function moveUploadedFile($from_path, $to_path) {
-    return move_uploaded_file($from_path, $to_path);
+    return rename($from_path, $to_path);
   }
 
   public function writeToFile($path, $stream, $append = false) {
