@@ -181,7 +181,7 @@ class FileUpload {
    * @param  array   $content_range
    * @return File
    */
-  protected function process($tmp_name, $name, $size, $type, $error, $index, $content_range) {
+  protected function process($tmp_name, $name, $size, $type, $error, $index = 0, $content_range = null) {
     $file = new File;
     $file->name = $this->getFilename($name, $type, $index, $content_range);
     $file->size = $this->fixIntegerOverflow(intval($size));
@@ -208,6 +208,15 @@ class FileUpload {
       }
 
       $file_size = $this->getFilesize($file_path, $append_file);
+
+      if($this->logger) {
+        $this->logger->debug('Processing ' . $file->name, array(
+          'file-path'   => $file_path,
+          'file'        => $file,
+          'append-file' => $append_file,
+          'file-size'   => $file_size,
+        ));
+      }
 
       if($file->size == $file_size) {
         // Yay, upload is complete!
