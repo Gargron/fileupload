@@ -214,6 +214,7 @@ class FileUpload {
           'file-path'   => $file_path,
           'file'        => $file,
           'append-file' => $append_file,
+          'file-exists' => $this->filesystem->isFile($file_path),
           'file-size'   => $file_size,
         ));
       }
