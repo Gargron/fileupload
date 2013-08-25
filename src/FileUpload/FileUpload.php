@@ -113,7 +113,7 @@ class FileUpload {
 
   /**
    * Process entire submitted request
-   * @return array
+   * @return array Files and response headers
    */
   public function processAll() {
     $content_range = $this->getContentRange();
@@ -154,7 +154,28 @@ class FileUpload {
       );
     }
 
-    return $files;
+    return array($files, $this->getNewHeaders($files, $content_range));
+  }
+
+  /**
+   * Generate headers for response
+   * @param  array  $files
+   * @param  array  $content_range
+   * @return array
+   */
+  protected function getNewHeaders(array $files, $content_range) {
+    $headers = array(
+      'pragma'                 => 'no-cache',
+      'cache-control'          => 'no-store, no-cache, must-revalidate',
+      'content-disposition'    => 'inline; filename="files.json"',
+      'x-content-type-options' => 'nosniff'
+    );
+
+    if($content_range && is_object($files[0]) && $files[0]->size) {
+      $headers['range'] = '0-' . ($this->fixIntegerOverflow($files[0]->size) - 1);
+    }
+
+    return $headers;
   }
 
   /**
