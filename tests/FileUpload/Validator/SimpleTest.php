@@ -28,7 +28,7 @@ class SimpleTest extends \PHPUnit_Framework_TestCase {
     $file->size = 10;
     $file->type = 'image/png';
 
-    $this->assertNull($validator->validate('', $file, 10));
+    $this->assertTrue($validator->validate('', $file, 10));
     $this->assertEmpty($file->error);
   }
 }

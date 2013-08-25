@@ -39,5 +39,7 @@ class Simple implements Validator {
       $file->error = 'Too big for us';
       return false;
     }
+
+    return true;
   }
 }

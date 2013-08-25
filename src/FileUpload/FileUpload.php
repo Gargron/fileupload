@@ -164,28 +164,35 @@ class FileUpload {
     $file->setTypeFromPath($tmp_name);
 
     if($this->validate($tmp_name, $file, $error, $index)) {
+      // Now that we passed the validation, we can work with the file
       $upload_path = $this->pathresolver->getUploadPath();
       $file_path   = $this->pathresolver->getUploadPath($file->name);
       $append_file = $content_range && $this->filesystem->isFile($file_path) && $file->size > $this->getFilesize($file_path);
 
       if($tmp_name && $this->filesystem->isUploadedFile($file_path)) {
+        // This is a normal upload from temporary file
         if($append_file) {
+          // Adding to existing file (chunked uploads)
           $this->filesystem->writeToFile($file_path, $this->filesystem->getFileStream($tmp_name), true);
         } else {
+          // Upload full file
           $this->filesystem->moveUploadedFile($tmp_name, $file_path);
         }
       } else {
+        // This is a PUT-type upload
         $this->filesystem->writeToFile($file_path, $this->filesystem->getInputStream(), $append_file);
       }
 
       $file_size = $this->getFilesize($file_path, $append_file);
 
       if($file->size == $file_size) {
+        // Yay, upload is complete!
         $file->path = $file_path;
       } else {
         $file->size = $file_size;
 
         if(! $content_range) {
+          // The file is incomplete and it's not a chunked upload, abort
           $this->filesystem->unlink($file_path);
           $file->error = 'abort';
         }
@@ -296,6 +303,7 @@ class FileUpload {
    */
   protected function validate($tmp_name, File $file, $error, $index) {
     if($error) {
+      // PHP error
       $file->error = $error;
       return false;
     }
@@ -304,6 +312,7 @@ class FileUpload {
     $post_max_size  = $this->getConfigBytes(ini_get('post_max_size'));
 
     if($post_max_size && ($content_length > $post_max_size)) {
+      // Uploaded file exceeds maximum filesize PHP accepts in the configs
       $file->error = 'Too big for PHP';
       return false;
     }
@@ -314,11 +323,15 @@ class FileUpload {
       $current_size = $content_length;
     }
 
+    // Now that we passed basic, implementation-agnostic tests,
+    // let's do custom validators
     foreach($this->validators as $validator) {
       if(! $validator->validate($tmp_name, $file, $current_size)) {
         return false;
       }
     }
+
+    return true;
   }
 
   /**
