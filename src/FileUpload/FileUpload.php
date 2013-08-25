@@ -193,7 +193,7 @@ class FileUpload {
       $file_path   = $this->pathresolver->getUploadPath($file->name);
       $append_file = $content_range && $this->filesystem->isFile($file_path) && $file->size > $this->getFilesize($file_path);
 
-      if($tmp_name && $this->filesystem->isUploadedFile($file_path)) {
+      if($tmp_name && $this->filesystem->isUploadedFile($tmp_name)) {
         // This is a normal upload from temporary file
         if($append_file) {
           // Adding to existing file (chunked uploads)
