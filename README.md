@@ -26,8 +26,15 @@ $fileupload->setPathResolver($pathresolver);
 $fileupload->setFileSystem($filesystem);
 $fileupload->addValidator($validator);
 
-// This array would be just what jQuery-File-Upload would expect
-$files = $fileupload->processAll();
+// Doing the deed
+list($files, $headers) = $fileupload->processAll();
+
+// Outputting it, for example like this
+foreach($headers as $header => $value) {
+  header($header . ': ' . $value);
+}
+
+echo json_encode(array('files' => $files));
 ```
 
 ### License
