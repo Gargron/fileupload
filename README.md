@@ -1,6 +1,8 @@
 FileUpload
 ==========
 
+[![Build Status](https://travis-ci.org/Gargron/fileupload.png?branch=master)](https://travis-ci.org/Gargron/fileupload)
+
 PHP FileUpload library that supports chunked uploads. Adopted from the
 procedural script included with jQuery-File-Upload, designed to work
 with that JavaScript plugin, with normal forms, and to be embeddable into
