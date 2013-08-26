@@ -5,4 +5,11 @@ php:
   - 5.4
   - 5.3
 
+before_script:
+  - composer selfupdate
+  - composer install
+
+notifications:
+  email: false
+
 script: phpunit
