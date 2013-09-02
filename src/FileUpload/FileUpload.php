@@ -349,7 +349,12 @@ class FileUpload {
   }
 
   /**
-   * Validate upload
+   * Validate upload using some default rules, and custom
+   * validators added via addValidator. Default rules:
+   *
+   * - No PHP errors from $_FILES
+   * - File size permitted by PHP config
+   *
    * @param  string  $tmp_name
    * @param  File    $file
    * @param  integer $error
@@ -357,6 +362,8 @@ class FileUpload {
    * @return boolean
    */
   protected function validate($tmp_name, File $file, $error, $index) {
+    // TODO: Abstract error messages
+
     if($error) {
       // PHP error
       $file->error = $error;

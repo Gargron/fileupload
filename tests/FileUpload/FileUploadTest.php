@@ -13,5 +13,9 @@ class FileUploadTest extends \PHPUnit_Framework_TestCase {
 
     $uploader->setPathResolver($resolver);
     $uploader->setFileSystem($filesystem);
+
+    // TODO: Write this test
   }
+
+  // TODO: Tests for multiple uploads, chunked uploads, aborted uploads
 }

@@ -4,9 +4,19 @@ FileUpload
 [![Build Status](https://travis-ci.org/Gargron/fileupload.png?branch=master)](https://travis-ci.org/Gargron/fileupload)
 
 PHP FileUpload library that supports chunked uploads. Adopted from the
-procedural script included with jQuery-File-Upload, designed to work
+procedural script included with [jQuery-File-Upload][1], designed to work
 with that JavaScript plugin, with normal forms, and to be embeddable into
 any application/architecture.
+
+[1]: https://github.com/blueimp/jQuery-File-Upload
+
+### Status
+
+The unit test suite is incomplete, however the library "works on my machine,"
+as it were. You are welcome to contribute.
+
+You can grep the source code for "TODO" to find things you could help
+finishing.
 
 ### Usage
 
@@ -38,6 +48,14 @@ foreach($headers as $header => $value) {
 
 echo json_encode(array('files' => $files));
 ```
+
+### Extending
+
+The reason why the path resolver, the validators and the file system are
+abstracted, is so you can write your own, fitting your own needs (and also,
+for unit testing). The library is shipped with a bunch of "simple"
+implementations which fit the basic needs. You could write a file system
+implementation that works with Amazon S3, for example.
 
 ### License
 
