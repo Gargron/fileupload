@@ -7,14 +7,14 @@ class Mock implements FileSystem {
    * @see FileSystem
    */
   public function isFile($path) {
-    return true;
+    return is_file($path);
   }
 
   /**
    * @see FileSystem
    */
   public function isDir($path) {
-    return true;
+    return is_dir($path);
   }
 
   /**
@@ -28,49 +28,49 @@ class Mock implements FileSystem {
    * @see FileSystem
    */
   public function moveUploadedFile($from_path, $to_path) {
-    return;
+    return rename($from_path, $to_path);
   }
 
   /**
    * @see FileSystem
    */
   public function writeToFile($path, $stream, $append = false) {
-    return;
+    return file_put_contents($path, $stream, $append ? \FILE_APPEND : 0);
   }
 
   /**
    * @see FileSystem
    */
   public function getInputStream() {
-    return;
+    return fopen('php://input', 'r');
   }
 
   /**
    * @see FileSystem
    */
   public function getFileStream($path) {
-    return;
+    return fopen($path, 'r');
   }
 
   /**
    * @see FileSystem
    */
   public function unlink($path) {
-    return;
+    return unlink($path);
   }
 
   /**
    * @see FileSystem
    */
   public function clearStatCache($path) {
-    return;
+    return clearstatcache(true, $path);
   }
 
   /**
    * @see FileSystem
    */
   public function getFilesize($path) {
-    return 1024;
+    return filesize($path);
   }
 
 }

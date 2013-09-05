@@ -6,7 +6,18 @@ class SimpleTest extends \PHPUnit_Framework_TestCase {
   protected $filesystem;
 
   public function setUp() {
+    $playground_path = __DIR__ . '/../../playground';
+    $fixtures_path   = __DIR__ . '/../../fixtures';
+
     $this->filesystem = new Simple();
+
+    if(! is_dir($playground_path)) {
+      mkdir($playground_path);
+    }
+
+    if(! is_file($playground_path . '/yadda.txt')) {
+      copy($fixtures_path . '/yadda.txt', $playground_path . '/yadda.txt');
+    }
   }
 
   public function testIsFile() {
@@ -20,8 +31,8 @@ class SimpleTest extends \PHPUnit_Framework_TestCase {
   }
 
   public function testWriteToFile() {
-    $yadda = __DIR__ . '/../../fixtures/yadda.txt';
-    $path  = __DIR__ . '/../../fixtures/test.1.txt';
+    $yadda = __DIR__ . '/../../playground/yadda.txt';
+    $path  = __DIR__ . '/../../playground/test.1.txt';
 
     $this->filesystem->writeToFile($path, $this->filesystem->getFileStream($yadda));
     $this->assertEquals(file_get_contents($yadda), file_get_contents($path));
@@ -30,8 +41,8 @@ class SimpleTest extends \PHPUnit_Framework_TestCase {
   }
 
   public function testMoveUploadedFile() {
-    $yadda = __DIR__ . '/../../fixtures/yadda.txt';
-    $path  = __DIR__ . '/../../fixtures/test.2.txt';
+    $yadda = __DIR__ . '/../../playground/yadda.txt';
+    $path  = __DIR__ . '/../../playground/test.2.txt';
 
     $original_yadda = file_get_contents($yadda);
 
