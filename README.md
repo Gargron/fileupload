@@ -49,6 +49,18 @@ foreach($headers as $header => $value) {
 echo json_encode(array('files' => $files));
 ```
 
+### Callbacks
+
+Currently implemented events:
+
+* `completed`
+
+```php
+$fileupload->addCallback('completed', function(FileUpload\File $file) {
+  // Whoosh!
+});
+```
+
 ### Extending
 
 The reason why the path resolver, the validators and the file system are
