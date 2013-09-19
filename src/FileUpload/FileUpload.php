@@ -283,13 +283,7 @@ class FileUpload {
       return;
     
     foreach($this->callbacks[$eventName] as $callback) {
-      try {
-        $callback($file);
-      } catch(\Exception $e) {
-        if($this->logger) {
-          $this->logger->debug($e->getMessage());
-        }
-      }
+      $callback($file);
     }
   }
 
