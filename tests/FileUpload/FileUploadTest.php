@@ -33,15 +33,21 @@ class FileUploadTest extends \PHPUnit_Framework_TestCase {
     $filesystem = new FileSystem\Mock();
     $resolver   = new PathResolver\Simple($playground_path . '/uploaded');
     $uploader   = new FileUpload($file, $server);
+    $test       = false;
 
     $uploader->setPathResolver($resolver);
     $uploader->setFileSystem($filesystem);
+
+    $uploader->addCallback('completed', function () use (&$test) {
+      $test = true;
+    });
 
     list($files, $headers) = $uploader->processAll();
 
     $this->assertCount(1, $files, 'Files array should contain one file');
     $this->assertEquals(0, $files[0]->error, 'Uploaded file should not have errors');
     $this->assertNotEmpty($files[0]->path, 'Uploaded file should have path');
+    $this->assertTrue($test, 'Complete callback should set $test to true');
   }
 
   // TODO: Tests for multiple uploads, chunked uploads, aborted uploads
