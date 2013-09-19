@@ -43,6 +43,12 @@ class FileUpload {
    * @var array
    */
   protected $validators = array();
+  
+  /**
+   * Callbacks to be run
+   * @var array
+   */
+  protected $callbacks = array();
 
   /**
    * Construct this mother
@@ -76,6 +82,14 @@ class FileUpload {
    */
   public function setLogger(LoggerInterface $logger) {
     $this->logger = $logger;
+  }
+  
+  /**
+   * Register callback for an upload complete
+   * @param \Closure $callback
+   */
+  public function setUploadCompleteCallback(\Closure $callback) {
+    $this->callbacks['upload_complete'][] = $callback;
   }
 
   /**
@@ -243,6 +257,7 @@ class FileUpload {
       if($file->size == $file_size) {
         // Yay, upload is complete!
         $file->path = $file_path;
+        $this->processCallbacksFor('upload_complete', $file);
       } else {
         $file->size = $file_size;
 
@@ -255,6 +270,27 @@ class FileUpload {
     }
 
     return $file;
+  }
+  
+  /**
+   * Process callbacks for a given event
+   * @param string $eventName
+   * @param File $file
+   * @return void
+   */
+  protected function processCallbacksFor($eventName, File $file) {
+    if(null === $this->callbacks || empty($this->callbacks[$eventName]))
+      return;
+    
+    foreach($this->callbacks[$eventName] as $callback) {
+      try {
+        $callback($file);
+      } catch(\Exception $e) {
+        if($this->logger) {
+          $this->logger->debug($e->getMessage());
+        }
+      }
+    }
   }
 
   /**
