@@ -61,6 +61,12 @@ $fileupload->addCallback('completed', function(FileUpload\File $file) {
 });
 ```
 
+### Possible issues
+
+#### #1 `finfo_file()`: Empty filename or path in `FileUpload\File.php#23`
+To fix this problem check your `php.ini` config parameter `upload_max_filesize`.
+If this problem appeared you probably trying to upload file larger than allowed in your `php.ini`
+
 ### Extending
 
 The reason why the path resolver, the validators and the file system are
