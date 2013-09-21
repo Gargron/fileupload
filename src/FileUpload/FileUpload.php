@@ -401,10 +401,11 @@ class FileUpload {
       return false;
     }
 
-    $content_length = $this->getContentLength();
-    $post_max_size  = $this->getConfigBytes(ini_get('post_max_size'));
+    $content_length  = $this->getContentLength();
+    $post_max_size   = $this->getConfigBytes(ini_get('post_max_size'));
+    $upload_max_size = $this->getConfigBytes(ini_get('upload_max_filesize'));
 
-    if($post_max_size && ($content_length > $post_max_size)) {
+    if(($post_max_size && ($content_length > $post_max_size)) || ($upload_max_size && ($content_length > $upload_max_size))) {
       // Uploaded file exceeds maximum filesize PHP accepts in the configs
       $file->error = 'Too big for PHP';
       return false;
