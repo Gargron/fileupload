@@ -28,7 +28,7 @@ class Simple implements FileSystem {
    * @see FileSystem
    */
   public function moveUploadedFile($from_path, $to_path) {
-    return rename($from_path, $to_path);
+    return move_uploaded_file($from_path, $to_path);
   }
 
   /**
