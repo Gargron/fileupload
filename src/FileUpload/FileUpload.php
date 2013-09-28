@@ -51,6 +51,29 @@ class FileUpload {
   protected $callbacks = array();
 
   /**
+   * Our own error constants
+   */
+  const UPLOAD_ERR_PHP_SIZE = 20;
+
+  /**
+   * Default messages
+   * @var array
+   */
+  protected $messages = array(
+    // PHP $_FILES-own
+    UPLOAD_ERR_INI_SIZE   => 'The uploaded file exceeds the upload_max_filesize directive in php.ini',
+    UPLOAD_ERR_FORM_SIZE  => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form',
+    UPLOAD_ERR_PARTIAL    => 'The uploaded file was only partially uploaded',
+    UPLOAD_ERR_NO_FILE    => 'No file was uploaded',
+    UPLOAD_ERR_NO_TMP_DIR => 'Missing a temporary folder',
+    UPLOAD_ERR_CANT_WRITE => 'Failed to write file to disk',
+    UPLOAD_ERR_EXTENSION  => 'A PHP extension stopped the file upload',
+
+    // Our own
+    self::UPLOAD_ERR_PHP_SIZE => 'The upload file exceeds the post_max_size or the upload_max_filesize directives in php.ini',
+  );
+
+  /**
    * Construct this mother
    * @param array $upload
    * @param array $server
@@ -91,6 +114,14 @@ class FileUpload {
    */
   public function addCallback($event, \Closure $callback) {
     $this->callbacks[$event][] = $callback;
+  }
+
+  /**
+   * Merge (overwrite) default error messages
+   * @param array $new_messages
+   */
+  public function setMessages(array $new_messages) {
+    $this->messages = array_merge($this->messages, $new_messages);
   }
 
   /**
@@ -393,11 +424,9 @@ class FileUpload {
    * @return boolean
    */
   protected function validate($tmp_name, File $file, $error, $index) {
-    // TODO: Abstract error messages
-
-    if($error) {
+    if($error !== 0) {
       // PHP error
-      $file->error = $error;
+      $file->error = $this->messages[$error];
       return false;
     }
 
@@ -407,7 +436,7 @@ class FileUpload {
 
     if(($post_max_size && ($content_length > $post_max_size)) || ($upload_max_size && ($content_length > $upload_max_size))) {
       // Uploaded file exceeds maximum filesize PHP accepts in the configs
-      $file->error = 'Too big for PHP';
+      $file->error = $this->messages[self::UPLOAD_ERR_PHP_SIZE];
       return false;
     }
 
