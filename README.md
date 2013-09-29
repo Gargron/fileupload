@@ -10,10 +10,21 @@ any application/architecture.
 
 [1]: https://github.com/blueimp/jQuery-File-Upload
 
+### Installing
+
+This package is available via Composer:
+
+```json
+{
+  "require": {
+    "gargron/fileupload": "~1.0.1"
+  }
+}
+```
+
 ### Status
 
-The unit test suite is incomplete, however the library "works on my machine,"
-as it were. You are welcome to contribute.
+The unit test suite covers simple uploads, and the library "works on my machine," as it were. You are welcome to contribute.
 
 You can grep the source code for "TODO" to find things you could help
 finishing.
