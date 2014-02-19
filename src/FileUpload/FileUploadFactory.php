@@ -45,7 +45,7 @@ class FileUploadFactory {
    */
   public function create($upload, $server) {
     $fileupload = new FileUpload($upload, $server);
-    $fileupload->setValidator($this->validator);
+    $fileupload->addValidator($this->validator);
     $fileupload->setPathResolver($this->pathresolver);
     $fileupload->setFileSystem($this->filesystem);
     return $fileupload;
