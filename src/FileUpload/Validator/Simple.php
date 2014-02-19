@@ -36,7 +36,7 @@ class Simple implements Validator {
    * @param integer $max_size
    * @param array   $allowed_types
    */
-  public function __construct($max_size, array $allowed_types) {
+  public function __construct($max_size = '*', array $allowed_types = array('*')) {
     $this->max_size      = $max_size;
     $this->allowed_types = $allowed_types;
   }
@@ -53,12 +53,12 @@ class Simple implements Validator {
    * @see Validator
    */
   public function validate($tmp_name, File $file, $current_size) {
-    if(! in_array($file->type, $this->allowed_types)) {
+    if( ! in_array('*', $this->allowed_types) and ! in_array($file->type, $this->allowed_types)) {
       $file->error = $this->messages[self::UPLOAD_ERR_BAD_TYPE];
       return false;
     }
-
-    if($file->size > $this->max_size || $current_size > $this->max_size) {
+    
+    if($this->max_size != '*' and ($file->size > $this->max_size or $current_size > $this->max_size)) {
       $file->error = $this->messages[self::UPLOAD_ERR_TOO_LARGE];
       return false;
     }
