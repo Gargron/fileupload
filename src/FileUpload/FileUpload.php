@@ -294,6 +294,7 @@ class FileUpload {
       if($file->size == $file_size) {
         // Yay, upload is complete!
         $file->path = $file_path;
+        $file->completed = true;
         $this->processCallbacksFor('completed', $file);
       } else {
         $file->size = $file_size;
