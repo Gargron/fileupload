@@ -169,15 +169,20 @@ class FileUpload {
 
     if($this->logger) {
       $this->logger->debug('Processing uploads', array(
-        'content-range' => $content_range,
-        'size'          => $size,
-        'upload'        => $upload,
-        'server'        => $this->server,
+        'Content-range' => $content_range,
+        'Size'          => $size,
+        'Upload array'  => $upload,
+        'Server array'  => $this->server,
       ));
     }
 
     if($upload && is_array($upload['tmp_name'])) {
       foreach($upload['tmp_name'] as $index => $tmp_name) {
+        if(empty($tmp_name)) {
+          // Discard empty uploads
+          continue;
+        }
+
         $files[] = $this->process(
           $tmp_name,
           $upload['name'][$index],
@@ -188,7 +193,7 @@ class FileUpload {
           $content_range
         );
       }
-    } else if($upload) {
+    } else if($upload && !empty($upload['tmp_name'])) {
       $files[] = $this->process(
         $upload['tmp_name'],
         $upload['name'],
@@ -278,11 +283,11 @@ class FileUpload {
 
       if($this->logger) {
         $this->logger->debug('Processing ' . $file->name, array(
-          'file-path'   => $file_path,
-          'file'        => $file,
-          'append-file' => $append_file,
-          'file-exists' => $this->filesystem->isFile($file_path),
-          'file-size'   => $file_size,
+          'File path'       => $file_path,
+          'File object'     => $file,
+          'Append to file?' => $append_file,
+          'File exists?'    => $this->filesystem->isFile($file_path),
+          'File size'       => $file_size,
         ));
       }
 

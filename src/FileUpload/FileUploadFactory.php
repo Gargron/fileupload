@@ -9,16 +9,16 @@ use FileUpload\Validator\Validator;
 class FileUploadFactory {
   /**
    * Validator to be used in the factory
-   * @var Validator
+   * @var array
    */
-  protected $validator;
-  
+  protected $validators;
+
   /**
    * PathResolver to be used in the factory
    * @var PathResolver
    */
   protected $pathresolver;
-  
+
   /**
    * FileSystem to be used in the factory
    * @var FileSystem
@@ -27,14 +27,14 @@ class FileUploadFactory {
 
   /**
    * Construct new factory with the given modules
-   * @param Validator    $validator
    * @param PathResolver $pathresolver
    * @param FileSystem   $filesystem
+   * @param array        $validators
    */
-  public function __construct(Validator $validator, PathResolver $pathresolver, FileSystem $filesystem) {
-    $this->validator    = $validator;
+  public function __construct(PathResolver $pathresolver, FileSystem $filesystem, $validators = array()) {
     $this->pathresolver = $pathresolver;
     $this->filesystem   = $filesystem;
+    $this->validators   = $validators;
   }
 
   /**
@@ -45,9 +45,13 @@ class FileUploadFactory {
    */
   public function create($upload, $server) {
     $fileupload = new FileUpload($upload, $server);
-    $fileupload->addValidator($this->validator);
     $fileupload->setPathResolver($this->pathresolver);
     $fileupload->setFileSystem($this->filesystem);
+
+    foreach($this->validators as $validator) {
+      $fileupload->addValidator($validator);
+    }
+
     return $fileupload;
   }
 }

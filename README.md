@@ -33,18 +33,18 @@ finishing.
 
 ```php
 // Simple validation (max file size 2MB and only two allowed mime types)
-$validator    = new FileUpload\Validator\Simple(1024 * 1024 * 2, ['image/png', 'image/jpg']);
+$validator = new FileUpload\Validator\Simple(1024 * 1024 * 2, ['image/png', 'image/jpg']);
 
 // Simple path resolver, where uploads will be put
 $pathresolver = new FileUpload\PathResolver\Simple('/my/uploads/dir');
 
 // The machine's filesystem
-$filesystem   = new FileUpload\FileSystem\Simple();
+$filesystem = new FileUpload\FileSystem\Simple();
 
 // FileUploader itself
-$fileupload   = new FileUpload\FileUpload($_FILES['files'], $_SERVER);
+$fileupload = new FileUpload\FileUpload($_FILES['files'], $_SERVER);
 
-// Adding it all together. Note that you can use multiple validators
+// Adding it all together. Note that you can use multiple validators or none at all
 $fileupload->setPathResolver($pathresolver);
 $fileupload->setFileSystem($filesystem);
 $fileupload->addValidator($validator);
