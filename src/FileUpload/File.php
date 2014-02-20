@@ -16,6 +16,12 @@ class File {
   public $type  = 'application/octet-stream';
 
   /**
+   * Is the file completely downloaded
+   * @var boolean
+   */
+  public $completed  = false;
+
+  /**
    * Determine file type from path (actual mime type, not extension checking)
    * @param string $path
    */
