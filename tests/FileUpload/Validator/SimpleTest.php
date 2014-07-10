@@ -22,8 +22,8 @@ class SimpleTest extends \PHPUnit_Framework_TestCase {
         $this->assertNotEmpty($file->error);
     }
 
-    /*
-     * @expectedException     Exception
+    /**
+     * @expectedException \Exception
      */
     public function testFailMaxSize1A() {
         $validator = new Simple("1A", array());

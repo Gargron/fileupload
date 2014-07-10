@@ -28,10 +28,10 @@ class Util {
         );
         $unit = strtolower(substr($input, -1));
         if (isset($units[$unit])) {
-            $number = $number * $units[$unit];
+            return($number * $units[$unit]);
+        } else {
+            return(null);
         }
-
-        return $number;
     }
 
 } 

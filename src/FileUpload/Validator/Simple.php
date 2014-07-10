@@ -53,7 +53,7 @@ class Simple implements Validator {
     /**
      * Sets the max file size
      * @param mixed $max_size
-     * @throws Exception if the max_size value is invalid
+     * @throws \Exception if the max_size value is invalid
      */
     public function setMaxSize($max_size) {
         if (is_numeric($max_size)) {
@@ -62,8 +62,8 @@ class Simple implements Validator {
             $this->max_size = Util::humanReadableToBytes($max_size);
         }
 
-        if ($this->max_size < 0) {
-            throw new Exception('invalid max_size value');
+        if ($this->max_size < 0 ||$this->max_size == null) {
+            throw new \Exception('invalid max_size value');
         }
     }
 
