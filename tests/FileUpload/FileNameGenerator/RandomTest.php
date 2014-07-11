@@ -24,8 +24,6 @@ class RandomTest extends \PHPUnit_Framework_TestCase {
 
         $new_name = $generator->getFileName($filename, "image/jpg", "asdf.jpg", 0, "100", $resolver, $filesystem);
 
-        echo($new_name);
-
         $this->assertEquals(32, strrpos($new_name, "."));
         $this->assertEquals(substr($new_name, strrpos($new_name, ".")), ".jpg");
 

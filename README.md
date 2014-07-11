@@ -70,6 +70,18 @@ $validator = new FileUpload\Validator\Simple("10M", ['image/png', 'image/jpg']);
 
 Here is a listing of the possible values (B => B; KB => K; MB => M; GB => G). These values are Binary convention so basing on 1024.
 
+### FileNameGenerator  
+
+With the FileNameGenerator you have the possibility to change under witch Filename we uploaded files will be saved. 
+
+``` 
+$fileupload = new FileUpload\FileUpload($_FILES['files'], $_SERVER);
+$filenamegenerator = new FileUpload\FileNameGenerator\Simple();
+$fileupload->setFileNameGenerator($filenamegenerator);
+```
+
+We have placed some example generators like md5 who saves the file under the md5 hash of the filename or the random generator witch uses an random string. The default (the simple generator to be more precise) will save the file by its origin name.
+
 ### Callbacks
 
 Currently implemented events:
