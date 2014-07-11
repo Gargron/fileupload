@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: decola
- * Date: 11.07.14
- * Time: 14:23
- */
+
 
 namespace FileUpload\FileNameGenerator;
 

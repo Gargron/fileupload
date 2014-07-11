@@ -17,6 +17,12 @@ class FileUpload {
   protected $upload;
 
   /**
+   * The array of uploaded files
+   * @var array
+   */
+  protected $files;
+
+  /**
    * $_SERVER
    * @var array
    */
@@ -175,13 +181,21 @@ class FileUpload {
   }
 
   /**
+   * Returns an array of all uploaded files
+   * @return array
+   */
+  public function getFiles() {
+      return($this->files);
+  }
+
+  /**
    * Process entire submitted request
    * @return array Files and response headers
    */
   public function processAll() {
     $content_range = $this->getContentRange();
     $size          = $this->getSize();
-    $files         = array();
+    $this->files   = array();
     $upload        = $this->upload;
 
     if($this->logger) {
@@ -200,7 +214,7 @@ class FileUpload {
           continue;
         }
 
-        $files[] = $this->process(
+        $this->files[] = $this->process(
           $tmp_name,
           $upload['name'][$index],
           $size ? $size : $upload['size'][$index],
@@ -211,7 +225,7 @@ class FileUpload {
         );
       }
     } else if($upload && !empty($upload['tmp_name'])) {
-      $files[] = $this->process(
+      $this->files[] = $this->process(
         $upload['tmp_name'],
         $upload['name'],
         $size ? $size : (isset($upload['size']) ? $upload['size'] : $this->getContentLength()),
@@ -222,7 +236,7 @@ class FileUpload {
       );
     }
 
-    return array($files, $this->getNewHeaders($files, $content_range));
+    return array($this->files, $this->getNewHeaders($this->files, $content_range));
   }
 
   /**
