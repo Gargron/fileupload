@@ -2,6 +2,7 @@
 
 namespace FileUpload\Validator;
 use FileUpload\File;
+use FileUpload\Util;
 
 class Simple implements Validator {
   /**
@@ -37,7 +38,7 @@ class Simple implements Validator {
    * @param array   $allowed_types
    */
   public function __construct($max_size, array $allowed_types) {
-    $this->max_size      = $max_size;
+    $this->setMaxSize($max_size);
     $this->allowed_types = $allowed_types;
   }
 
@@ -48,6 +49,24 @@ class Simple implements Validator {
   public function setMessages(array $new_messages) {
     $this->messages = array_merge($this->messages, $new_messages);
   }
+
+    /**
+     * Sets the max file size
+     * @param mixed $max_size
+     * @throws \Exception if the max_size value is invalid
+     */
+    public function setMaxSize($max_size) {
+        if (is_numeric($max_size)) {
+            $this->max_size      = $max_size;
+        } else {
+            $this->max_size = Util::humanReadableToBytes($max_size);
+        }
+
+        if ($this->max_size < 0 ||$this->max_size == null) {
+            throw new \Exception('invalid max_size value');
+        }
+    }
+
 
   /**
    * @see Validator

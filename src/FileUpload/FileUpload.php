@@ -2,6 +2,8 @@
 
 namespace FileUpload;
 
+use FileUpload\FileNameGenerator\FileNameGenerator;
+use FileUpload\FileNameGenerator\Simple;
 use FileUpload\PathResolver\PathResolver;
 use FileUpload\FileSystem\FileSystem;
 use FileUpload\Validator\Validator;
@@ -25,6 +27,12 @@ class FileUpload {
    * @var PathResolver
    */
   protected $pathresolver;
+
+    /**
+     * Path resolver instance
+     * @var FileNameGenerator
+     */
+  protected $filename_generator;
 
   /**
    * File system instance
@@ -81,6 +89,7 @@ class FileUpload {
   public function __construct($upload, $server) {
     $this->upload = isset($upload) ? $upload : null;
     $this->server = $server;
+    $this->filename_generator = new Simple();
   }
 
   /**
@@ -90,6 +99,14 @@ class FileUpload {
   public function setPathResolver(PathResolver $pr) {
     $this->pathresolver = $pr;
   }
+
+    /**
+     * Set filename generator
+     * @param FileNameGenerator $fng
+     */
+    public function setFileNameGenerator(FileNameGenerator $fng) {
+        $this->filename_generator = $fng;
+    }
 
   /**
    * Set file system
@@ -255,7 +272,7 @@ class FileUpload {
    */
   protected function process($tmp_name, $name, $size, $type, $error, $index = 0, $content_range = null) {
     $file = new File;
-    $file->name = $this->getFilename($name, $type, $index, $content_range);
+    $file->name = $this->getFilename($name, $type, $index, $content_range, $tmp_name);
     $file->size = $this->fixIntegerOverflow(intval($size));
     $file->setTypeFromPath($tmp_name);
 
@@ -331,10 +348,12 @@ class FileUpload {
    * @param  string  $type
    * @param  integer $index
    * @param  array   $content_range
+   * @param  string  $tmp_name
    * @return string
    */
-  protected function getFilename($name, $type, $index, $content_range) {
-    return $this->getUniqueFilename($this->trimFilename($name, $type, $index, $content_range), $type, $index, $content_range);
+  protected function getFilename($name, $type, $index, $content_range, $tmp_name) {
+    $name = $this->trimFilename($name, $type, $index, $content_range);
+    return($this->filename_generator->getFileName($name, $type, $tmp_name, $index, $content_range, $this->pathresolver, $this->filesystem));
   }
 
   /**
@@ -349,32 +368,6 @@ class FileUpload {
     }
 
     return $this->fixIntegerOverflow($this->filesystem->getFilesize($path));
-  }
-
-  /**
-   * Get unique but consistent name
-   * @param  string  $name
-   * @param  string  $type
-   * @param  integer $index
-   * @param  array   $content_range
-   * @return string
-   */
-  protected function getUniqueFilename($name, $type, $index, $content_range) {
-    while($this->filesystem->isDir($this->pathresolver->getUploadPath($name))) {
-      $name = $this->pathresolver->upcountName($name);
-    }
-
-    $uploaded_bytes = $this->fixIntegerOverflow(intval($content_range[1]));
-
-    while($this->filesystem->isFile($this->pathresolver->getUploadPath($name))) {
-      if($uploaded_bytes == $this->getFilesize($this->pathresolver->getUploadPath($name))) {
-        break;
-      }
-
-      $name = $this->pathresolver->upcountName($name);
-    }
-
-    return $name;
   }
 
   /**
