@@ -39,7 +39,9 @@ class Util {
      * @param  integer $int
      * @return float
      */
-    public  function fixIntegerOverflow($int) {
+
+    public function fixIntegerOverflow($int) {
+
         if ($int < 0) {
             $int += 2.0 * (PHP_INT_MAX + 1);
         }
