@@ -62,11 +62,13 @@ echo json_encode(array('files' => $files));
 
 ### Validator
 
-If you want you can use the common human readable format for filesizes like "1M", "1G".
+If you want you can use the common human readable format for filesizes like "1M", "1G", just pass the String as the first Argument.
 
 ```
 $validator = new FileUpload\Validator\Simple("10M", ['image/png', 'image/jpg']);
 ```
+
+Here is a listing of the possible values (B => B; KB => K; MB => M; G => GB). These values are Binary convention so basing on 1024.
 
 ### Callbacks
 
