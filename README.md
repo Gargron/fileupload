@@ -60,6 +60,14 @@ foreach($headers as $header => $value) {
 echo json_encode(array('files' => $files));
 ```
 
+### Validator
+
+If you want you can use the common human readable format for filesizes like "1M", "1G".
+
+```
+$validator = new FileUpload\Validator\Simple("10M", ['image/png', 'image/jpg']);
+```
+
 ### Callbacks
 
 Currently implemented events:
