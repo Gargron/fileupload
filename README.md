@@ -68,7 +68,7 @@ If you want you can use the common human readable format for filesizes like "1M"
 $validator = new FileUpload\Validator\Simple("10M", ['image/png', 'image/jpg']);
 ```
 
-Here is a listing of the possible values (B => B; KB => K; MB => M; G => GB). These values are Binary convention so basing on 1024.
+Here is a listing of the possible values (B => B; KB => K; MB => M; GB => G). These values are Binary convention so basing on 1024.
 
 ### Callbacks
 
