@@ -48,7 +48,7 @@ class Random implements FileNameGenerator {
         return($this->getUniqueFilename($source_name, $type, $index, $content_range, $extension));
     }
 
-    protected function generateRandom () {
+    protected function generateRandom() {
         return(substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, $this->name_length));
     }
 
@@ -70,7 +70,7 @@ class Random implements FileNameGenerator {
         $uploaded_bytes = Util::fixIntegerOverflow(intval($content_range[1]));
 
         while($this->filesystem->isFile($this->pathresolver->getUploadPath($name))) {
-            if($uploaded_bytes == $this->getFilesize($this->pathresolver->getUploadPath($name))) {
+            if($uploaded_bytes == $this->filesystem->getFilesize($this->pathresolver->getUploadPath($name))) {
                 break;
             }
 
