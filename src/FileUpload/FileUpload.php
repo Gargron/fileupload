@@ -235,7 +235,10 @@ class FileUpload {
         $content_range
       );
     } else if($upload && $upload['error'] != 0) {
-        $this->files[] = array("error" => $this->messages[$upload['error']]);
+        $file = new File();
+        $file->error = $this->messages[$upload['error']];
+        $file->error_code = $upload['error'];
+        $this->files[] = $file;
     }
 
     return array($this->files, $this->getNewHeaders($this->files, $content_range));
@@ -442,6 +445,7 @@ class FileUpload {
     if($error !== 0) {
       // PHP error
       $file->error = $this->messages[$error];
+      $file->error_code = $error;
       return false;
     }
 
@@ -452,6 +456,7 @@ class FileUpload {
     if(($post_max_size && ($content_length > $post_max_size)) || ($upload_max_size && ($content_length > $upload_max_size))) {
       // Uploaded file exceeds maximum filesize PHP accepts in the configs
       $file->error = $this->messages[self::UPLOAD_ERR_PHP_SIZE];
+      $file->error_code = self::UPLOAD_ERR_PHP_SIZE;
       return false;
     }
 

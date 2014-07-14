@@ -10,6 +10,12 @@ class File {
   public $error = 0;
 
   /**
+   * Preset no errors
+   * @var mixed
+   */
+  public $error_code = 0;
+
+  /**
    * Preset unknown mime type
    * @var string
    */
