@@ -234,6 +234,8 @@ class FileUpload {
         0,
         $content_range
       );
+    } else if($upload && $upload['error'] != 0) {
+        $this->files[] = array("error" => $this->messages[$upload['error']]);
     }
 
     return array($this->files, $this->getNewHeaders($this->files, $content_range));
