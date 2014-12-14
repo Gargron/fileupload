@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: decola
- * Date: 11.07.14
- * Time: 14:23
- */
+
 
 namespace FileUpload\FileNameGenerator;
 
@@ -53,7 +48,7 @@ class Random implements FileNameGenerator {
         return($this->getUniqueFilename($source_name, $type, $index, $content_range, $extension));
     }
 
-    protected function generateRandom () {
+    protected function generateRandom() {
         return(substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, $this->name_length));
     }
 

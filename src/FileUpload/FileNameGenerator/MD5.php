@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: decola
- * Date: 11.07.14
- * Time: 14:13
- */
 
 namespace FileUpload\FileNameGenerator;
 
@@ -28,4 +22,6 @@ class MD5 implements FileNameGenerator {
         $extension = substr($source_name, strrpos($source_name, '.')+1);
         return(md5($filename).".".$extension);
     }
+
+    //TODO Add duplicate filename check
 }
