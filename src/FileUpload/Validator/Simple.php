@@ -47,7 +47,7 @@ class Simple implements Validator {
    * @param array $new_messages
    */
   public function setMessages(array $new_messages) {
-    $this->messages = array_merge($this->messages, $new_messages);
+    $this->messages = $new_messages + $messages;
   }
 
     /**
