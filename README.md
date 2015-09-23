@@ -72,7 +72,7 @@ Here is a listing of the possible values (B => B; KB => K; MB => M; GB => G). Th
 
 ### FileNameGenerator  
 
-With the FileNameGenerator you have the possibility to change under witch Filename we uploaded files will be saved. 
+With the FileNameGenerator you have the possibility to change the Filename the uploaded files will be saved as. 
 
 ``` 
 $fileupload = new FileUpload\FileUpload($_FILES['files'], $_SERVER);
