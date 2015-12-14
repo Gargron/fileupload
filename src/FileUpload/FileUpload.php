@@ -469,7 +469,7 @@ class FileUpload {
     // Now that we passed basic, implementation-agnostic tests,
     // let's do custom validators
     foreach($this->validators as $validator) {
-      if(! $validator->validate($tmp_name, $file, $current_size)) {
+      if(! $validator->validate($file, $current_size)) {
         return false;
       }
     }
