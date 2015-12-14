@@ -1,1 +1,4 @@
 /vendor
+/.idea
+index.php
+/uploads
