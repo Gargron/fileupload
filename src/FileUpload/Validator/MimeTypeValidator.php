@@ -46,7 +46,9 @@ class MimeTypeValidator implements Validator
      */
     public function setErrorMessages(array $messages)
     {
-        $this->errorMessages = array_merge($this->errorMessages, $messages);
+        foreach ($messages as $key => $value) {
+            $this->errorMessages[$key] = $value;
+        }
     }
 
     /**
