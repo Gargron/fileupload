@@ -105,6 +105,24 @@ $fileupload->addCallback('completed', function(FileUpload\File $file) {
 });
 ```
 
+* `beforeValidation`
+
+```php 
+    $fileUploader->addCallback('beforeValidation', function (FileUpload\File $file
+    ) {
+        //about to validate the upload;
+    });
+```
+
+* `afterValidation`
+
+```php
+    $fileUploader->addCallback('afterValidation', function (FileUpload\File $file
+    ) {
+        //Yay, we got only valid uploads
+    });
+```
+
 ### Extending
 
 The reason why the path resolver, the validators and the file system are
