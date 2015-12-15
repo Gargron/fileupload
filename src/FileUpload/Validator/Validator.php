@@ -7,6 +7,7 @@ use FileUpload\File;
 interface Validator
 {
     /**
+     * Overwrite the default error messages
      * @param array $messages
      * @return void
      */

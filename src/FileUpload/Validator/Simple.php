@@ -46,12 +46,13 @@ class Simple implements Validator
     }
 
     /**
-     * Merge (overwrite) default messages
-     * @param array $new_messages
+     * {@inheritdoc}
      */
     public function setErrorMessages(array $new_messages)
     {
-        $this->messages = array_merge($this->messages, $new_messages);
+        foreach($new_messages as $key => $value){
+            $this->messages[$key] = $value ;
+        }
     }
 
     /**
