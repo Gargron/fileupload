@@ -56,7 +56,7 @@ class MimeTypeValidator implements Validator
     {
         if (!in_array($file->type, $this->mimeTypes)) {
             $this->isValid = false;
-            $file->error = $this->errorMessage[self::INVALID_MIMETYPE];
+            $file->error = $this->errorMessages[self::INVALID_MIMETYPE];
         }
 
         return $this->isValid;
