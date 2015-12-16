@@ -5,11 +5,6 @@ namespace FileUpload\Validator;
 use FileUpload\File;
 use FileUpload\Util;
 
-/**
- * @author Adelowo Lanre <me@adelowolanre.com>
- * Class SizeValidator
- * @package FileUpload\Validator
- */
 class SizeValidator implements Validator
 {
 

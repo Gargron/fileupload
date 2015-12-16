@@ -4,11 +4,6 @@ namespace FileUpload\Validator;
 
 use FileUpload\File;
 
-/**
- * @author Adelowo Lanre <me@adelowolanre.com>
- * Class MimeTypeValidator
- * @package FileUpload\Validator
- */
 class MimeTypeValidator implements Validator
 {
 
