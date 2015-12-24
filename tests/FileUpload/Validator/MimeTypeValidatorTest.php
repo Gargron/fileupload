@@ -16,7 +16,7 @@ class MimeTypeValidatorTest extends \PHPUnit_Framework_TestCase
 	{
 		$this->directory = dirname(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR;
 
-		$this->validator = new MimeTypeValidator(["image/jpeg"]);
+		$this->validator = new MimeTypeValidator(array("image/jpeg"));
 		$this->file = new File();
 	}
 
