@@ -1,15 +1,23 @@
 <?php
 
 namespace FileUpload\Validator;
+
 use FileUpload\File;
 
-interface Validator {
-  /**
-   * Validate upload
-   * @param  string  $tmp_name
-   * @param  File    $file
-   * @param  integer $current_size
-   * @return boolean
-   */
-  public function validate($tmp_name, File $file, $current_size);
+interface Validator
+{
+	/**
+	 * Overwrite the default error messages
+	 * @param array $messages
+	 * @return void
+	 */
+	public function setErrorMessages(array $messages);
+
+	/**
+	 * Validate upload
+	 * @param  File $file
+	 * @param  null|int $current_size
+	 * @return bool
+	 */
+	public function validate(File $file, $current_size = null);
 }
