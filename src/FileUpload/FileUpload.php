@@ -92,12 +92,13 @@ class FileUpload
      * Construct this mother
      * @param array $upload
      * @param array $server
+     * @param FileNameGenerator $generator
      */
-    public function __construct($upload, $server)
+    public function __construct($upload, $server , FileNameGenerator $generator = null)
     {
         $this->upload = isset($upload) ? $upload : null;
         $this->server = $server;
-        $this->filename_generator = new Simple();
+        $this->filename_generator = $generator ?: new Simple();
     }
 
     /**
@@ -110,12 +111,28 @@ class FileUpload
     }
 
     /**
+     * @return PathResolver
+     */
+    public function getPathResolver()
+    {
+        return $this->pathresolver;
+    }
+
+    /**
      * Set filename generator
      * @param FileNameGenerator $fng
      */
     public function setFileNameGenerator(FileNameGenerator $fng)
     {
         $this->filename_generator = $fng;
+    }
+
+    /**
+     * @return FileNameGenerator
+     */
+    public function getFileNameGenerator()
+    {
+        return $this->filename_generator;
     }
 
     /**
@@ -128,12 +145,28 @@ class FileUpload
     }
 
     /**
+     * @return FileSystem
+     */
+    public function getFileSystem()
+    {
+        return $this->filesystem;
+    }
+
+    /**
      * Set logger, optionally
      * @param LoggerInterface $logger
      */
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
+    }
+
+    /**
+     * @return LoggerInterface
+     */
+    public function getLogger()
+    {
+        return $this->logger;
     }
 
     /**
@@ -391,7 +424,7 @@ class FileUpload
     protected function getFilename($name, $type, $index, $content_range, $tmp_name)
     {
         $name = $this->trimFilename($name, $type, $index, $content_range);
-        return ($this->filename_generator->getFileName($name, $type, $tmp_name, $index, $content_range, $this->pathresolver, $this->filesystem));
+        return ($this->filename_generator->getFileName($name, $type, $tmp_name, $index, $content_range,$this));
     }
 
     /**
