@@ -93,8 +93,6 @@ $fileupload->setFileNameGenerator($filenamegenerator);
 
 We have placed some example generators like md5 who saves the file under the md5 hash of the filename or the random generator witch uses an random string. The default (the simple generator to be more precise) will save the file by its origin name.
 
-> The md5 Filename Generator would throw an exception - that is yours to catch - if the file exists in the directory..but  can be overridden by passing `true` as a parameter when creating the MD5 instance - It would overwrite the file without throwing an exception.
-
 ### Callbacks
 
 Currently implemented events:
