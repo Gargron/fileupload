@@ -2,6 +2,8 @@
 
 namespace FileUpload\FileNameGenerator;
 
+use FileUpload\FileUpload;
+
 interface FileNameGenerator {
 
     /**
@@ -11,10 +13,9 @@ interface FileNameGenerator {
      * @param  string       $tmp_name
      * @param  integer      $index
      * @param  string       $content_range
-     * @param  Pathresolver $pathresolver
-     * @param  Filesystem   $filesystem
+     * @param  FileUpload   $upload
      * @return string
      */
-    public function getFileName($source_name, $type, $tmp_name, $index, $content_range, $pathresolver, $filesystem);
+    public function getFileName($source_name, $type, $tmp_name, $index, $content_range,FileUpload $upload);
 
 }

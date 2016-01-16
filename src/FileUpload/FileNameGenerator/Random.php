@@ -4,6 +4,7 @@
 namespace FileUpload\FileNameGenerator;
 
 use FileUpload\Util;
+use FileUpload\FileUpload;
 
 class Random implements FileNameGenerator {
 
@@ -36,15 +37,14 @@ class Random implements FileNameGenerator {
      * @param  string       $tmp_name
      * @param  integer      $index
      * @param  string       $content_range
-     * @param  Pathresolver $pathresolver
-     * @param  Filesystem   $filesystem
+     * @param  FileUpload   $upload
      * @return string
      */
-    public function getFileName($source_name, $type, $tmp_name, $index, $content_range, $pathresolver, $filesystem)
+    public function getFileName($source_name, $type, $tmp_name, $index, $content_range, FileUpload $upload)
     {
-        $this->pathresolver = $pathresolver;
-        $this->filesystem = $filesystem;
-        $extension = substr($source_name, strrpos($source_name, '.')+1);
+        $this->pathresolver = $upload->getPathResolver();
+        $this->filesystem = $upload->getFileSystem();
+        $extension = pathinfo($source_name , PATHINFO_EXTENSION);
         return($this->getUniqueFilename($source_name, $type, $index, $content_range, $extension));
     }
 
