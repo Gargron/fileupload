@@ -7,6 +7,7 @@ use FileUpload\FileNameGenerator\Simple;
 use FileUpload\PathResolver\PathResolver;
 use FileUpload\FileSystem\FileSystem;
 use FileUpload\Validator\Validator;
+use FileUpload\File;
 use Psr\Log\LoggerInterface;
 
 class FileUpload
@@ -54,6 +55,12 @@ class FileUpload
     protected $logger;
 
     /**
+     * File Container instance
+     * @var File
+     */
+    protected $fileContainer ;
+
+    /**
      * Validators to be run
      * @var array
      */
@@ -92,12 +99,14 @@ class FileUpload
      * Construct this mother
      * @param array $upload
      * @param array $server
+     * @param FileNameGenerator $generator
      */
-    public function __construct($upload, $server)
+    public function __construct($upload, $server , FileNameGenerator $generator = null)
     {
         $this->upload = isset($upload) ? $upload : null;
         $this->server = $server;
-        $this->filename_generator = new Simple();
+        $this->filename_generator = $generator ?: new Simple();
+        $this->fileContainer = new File();
     }
 
     /**
@@ -110,12 +119,28 @@ class FileUpload
     }
 
     /**
+     * @return PathResolver
+     */
+    public function getPathResolver()
+    {
+        return $this->pathresolver;
+    }
+
+    /**
      * Set filename generator
      * @param FileNameGenerator $fng
      */
     public function setFileNameGenerator(FileNameGenerator $fng)
     {
         $this->filename_generator = $fng;
+    }
+
+    /**
+     * @return FileNameGenerator
+     */
+    public function getFileNameGenerator()
+    {
+        return $this->filename_generator;
     }
 
     /**
@@ -128,12 +153,36 @@ class FileUpload
     }
 
     /**
+     * @return FileSystem
+     */
+    public function getFileSystem()
+    {
+        return $this->filesystem;
+    }
+
+    /**
      * Set logger, optionally
      * @param LoggerInterface $logger
      */
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
+    }
+
+    /**
+     * @return LoggerInterface
+     */
+    public function getLogger()
+    {
+        return $this->logger;
+    }
+
+    /**
+     * @return File
+     */
+    public function getFileContainer()
+    {
+        return $this->fileContainer;
     }
 
     /**
@@ -249,7 +298,7 @@ class FileUpload
                 $content_range
             );
         } else if ($upload && $upload['error'] != 0) {
-            $file = new File();
+            $file = $this->getFileContainer();
             $file->error = $this->messages[$upload['error']];
             $file->error_code = $upload['error'];
             $this->files[] = $file;
@@ -307,55 +356,58 @@ class FileUpload
      */
     protected function process($tmp_name, $name, $size, $type, $error, $index = 0, $content_range = null)
     {
-        $file = new File;
+        $file = $this->getFileContainer();
         $file->name = $this->getFilename($name, $type, $index, $content_range, $tmp_name);
         $file->size = $this->fixIntegerOverflow(intval($size));
         $file->setTypeFromPath($tmp_name);
 
-        if ($this->validate($tmp_name, $file, $error, $index)) {
-            // Now that we passed the validation, we can work with the file
-            $upload_path = $this->pathresolver->getUploadPath();
-            $file_path = $this->pathresolver->getUploadPath($file->name);
-            $append_file = $content_range && $this->filesystem->isFile($file_path) && $file->size > $this->getFilesize($file_path);
+        if ($file->name) { //since the md5 filename generator would return false if it's allowDuplicate property is set to false and the file already exists.
 
-            if ($tmp_name && $this->filesystem->isUploadedFile($tmp_name)) {
-                // This is a normal upload from temporary file
-                if ($append_file) {
-                    // Adding to existing file (chunked uploads)
-                    $this->filesystem->writeToFile($file_path, $this->filesystem->getFileStream($tmp_name), true);
+            if ($this->validate($tmp_name, $file, $error, $index)) {
+                // Now that we passed the validation, we can work with the file
+                $upload_path = $this->pathresolver->getUploadPath();
+                $file_path = $this->pathresolver->getUploadPath($file->name);
+                $append_file = $content_range && $this->filesystem->isFile($file_path) && $file->size > $this->getFilesize($file_path);
+
+                if ($tmp_name && $this->filesystem->isUploadedFile($tmp_name)) {
+                    // This is a normal upload from temporary file
+                    if ($append_file) {
+                        // Adding to existing file (chunked uploads)
+                        $this->filesystem->writeToFile($file_path, $this->filesystem->getFileStream($tmp_name), true);
+                    } else {
+                        // Upload full file
+                        $this->filesystem->moveUploadedFile($tmp_name, $file_path);
+                    }
                 } else {
-                    // Upload full file
-                    $this->filesystem->moveUploadedFile($tmp_name, $file_path);
+                    // This is a PUT-type upload
+                    $this->filesystem->writeToFile($file_path, $this->filesystem->getInputStream(), $append_file);
                 }
-            } else {
-                // This is a PUT-type upload
-                $this->filesystem->writeToFile($file_path, $this->filesystem->getInputStream(), $append_file);
-            }
 
-            $file_size = $this->getFilesize($file_path, $append_file);
+                $file_size = $this->getFilesize($file_path, $append_file);
 
-            if ($this->logger) {
-                $this->logger->debug('Processing ' . $file->name, array(
-                    'File path' => $file_path,
-                    'File object' => $file,
-                    'Append to file?' => $append_file,
-                    'File exists?' => $this->filesystem->isFile($file_path),
-                    'File size' => $file_size,
-                ));
-            }
+                if ($this->logger) {
+                    $this->logger->debug('Processing ' . $file->name, array(
+                        'File path' => $file_path,
+                        'File object' => $file,
+                        'Append to file?' => $append_file,
+                        'File exists?' => $this->filesystem->isFile($file_path),
+                        'File size' => $file_size,
+                    ));
+                }
 
-            if ($file->size == $file_size) {
-                // Yay, upload is complete!
-                $file->path = $file_path;
-                $file->completed = true;
-                $this->processCallbacksFor('completed', $file);
-            } else {
-                $file->size = $file_size;
+                if ($file->size == $file_size) {
+                    // Yay, upload is complete!
+                    $file->path = $file_path;
+                    $file->completed = true;
+                    $this->processCallbacksFor('completed', $file);
+                } else {
+                    $file->size = $file_size;
 
-                if (!$content_range) {
-                    // The file is incomplete and it's not a chunked upload, abort
-                    $this->filesystem->unlink($file_path);
-                    $file->error = 'abort';
+                    if (!$content_range) {
+                        // The file is incomplete and it's not a chunked upload, abort
+                        $this->filesystem->unlink($file_path);
+                        $file->error = 'abort';
+                    }
                 }
             }
         }
@@ -391,7 +443,7 @@ class FileUpload
     protected function getFilename($name, $type, $index, $content_range, $tmp_name)
     {
         $name = $this->trimFilename($name, $type, $index, $content_range);
-        return ($this->filename_generator->getFileName($name, $type, $tmp_name, $index, $content_range, $this->pathresolver, $this->filesystem));
+        return ($this->filename_generator->getFileName($name, $type, $tmp_name, $index, $content_range,$this));
     }
 
     /**

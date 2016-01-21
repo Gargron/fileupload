@@ -35,38 +35,38 @@ finishing.
 
 	// Simple validation (max file size 2MB and only two allowed mime types)
 	$validator = new FileUpload\Validator\Simple(1024 * 1024 * 2, ['image/png', 'image/jpg']);
-	
+
 	/**
 	*   For more flexibility, the simple Validator has been broken down since the size validator might not always be needed..
-	
+
 		$mimeTypeValidator = new \FileUpload\Validator\MimeTypeValidator(["image/png", "image/jpeg"]);
-        
+
         $sizeValidator = new \FileUpload\Validator\SizeValidator("3M", "1M"); //the 1st parameter is the max size while the 2nd id the min size
 
 	**/
-	
+
 	// Simple path resolver, where uploads will be put
 	$pathresolver = new FileUpload\PathResolver\Simple('/my/uploads/dir');
-	
+
 	// The machine's filesystem
 	$filesystem = new FileUpload\FileSystem\Simple();
-	
+
 	// FileUploader itself
 	$fileupload = new FileUpload\FileUpload($_FILES['files'], $_SERVER);
-	
+
 	// Adding it all together. Note that you can use multiple validators or none at all
 	$fileupload->setPathResolver($pathresolver);
 	$fileupload->setFileSystem($filesystem);
 	$fileupload->addValidator($validator);
-	
+
 	// Doing the deed
 	list($files, $headers) = $fileupload->processAll();
-	
+
 	// Outputting it, for example like this
 	foreach($headers as $header => $value) {
 	  header($header . ': ' . $value);
 	}
-	
+
 	echo json_encode(array('files' => $files));
 
 ```
@@ -83,9 +83,9 @@ Here is a listing of the possible values (B => B; KB => K; MB => M; GB => G). Th
 
 ### FileNameGenerator  
 
-With the FileNameGenerator you have the possibility to change the Filename the uploaded files will be saved as. 
+With the FileNameGenerator you have the possibility to change the Filename the uploaded files will be saved as.
 
-``` 
+```
 $fileupload = new FileUpload\FileUpload($_FILES['files'], $_SERVER);
 $filenamegenerator = new FileUpload\FileNameGenerator\Simple();
 $fileupload->setFileNameGenerator($filenamegenerator);
@@ -107,7 +107,7 @@ $fileupload->addCallback('completed', function(FileUpload\File $file) {
 
 * `beforeValidation`
 
-```php 
+```php
     $fileUploader->addCallback('beforeValidation', function (FileUpload\File $file
     ) {
         //about to validate the upload;

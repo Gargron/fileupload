@@ -24,6 +24,14 @@ interface FileSystem {
    */
   public function isUploadedFile($path);
 
+
+  /**
+   * Check if the file exists in a specified directory {@see __construct}
+   * @param  string $path File to be checked.
+   * @return boolean
+   */
+  public function doesFileExist($path);
+
   /**
    * Move file
    * @param  string  $from_path

@@ -10,6 +10,7 @@ namespace FileUpload\FileNameGenerator;
 
 use FileUpload\FileSystem\FileSystem;
 use FileUpload\PathResolver\PathResolver;
+use FileUpload\FileUpload;
 use FileUpload\Util;
 
 class Simple implements FileNameGenerator {
@@ -33,14 +34,13 @@ class Simple implements FileNameGenerator {
      * @param  string       $tmp_name
      * @param  integer      $index
      * @param  string       $content_range
-     * @param  Pathresolver $pathresolver
-     * @param  Filesystem   $filesystem
+     * @param  FileUpload   $upload
      * @return string
      */
-    public function getFileName($source_name, $type, $tmp_name, $index, $content_range, $pathresolver, $filesystem)
+    public function getFileName($source_name, $type, $tmp_name, $index, $content_range, FileUpload $upload)
     {
-        $this->filesystem = $filesystem;
-        $this->pathresolver = $pathresolver;
+        $this->filesystem = $upload->getFileSystem();
+        $this->pathresolver = $upload->getPathResolver();
 
         return($this->getUniqueFilename($source_name, $type, $index, $content_range));
     }

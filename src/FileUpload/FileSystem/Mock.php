@@ -25,6 +25,14 @@ class Mock implements FileSystem {
   }
 
   /**
+   * {@inheritdoc}
+   */
+  public function doesFileExist($path)
+  {
+      return file_exists($path) ? true : false ;
+  }
+
+  /**
    * @see FileSystem
    */
   public function moveUploadedFile($from_path, $to_path) {
