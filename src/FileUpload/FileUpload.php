@@ -83,13 +83,13 @@ class FileUpload
      */
     protected $messages = array(
         // PHP $_FILES-own
-        UPLOAD_ERR_INI_SIZE => 'The uploaded file exceeds the upload_max_filesize directive in php.ini',
-        UPLOAD_ERR_FORM_SIZE => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form',
-        UPLOAD_ERR_PARTIAL => 'The uploaded file was only partially uploaded',
-        UPLOAD_ERR_NO_FILE => 'No file was uploaded',
+        UPLOAD_ERR_INI_SIZE   => 'The uploaded file exceeds the upload_max_filesize directive in php.ini',
+        UPLOAD_ERR_FORM_SIZE  => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form',
+        UPLOAD_ERR_PARTIAL    => 'The uploaded file was only partially uploaded',
+        UPLOAD_ERR_NO_FILE    => 'No file was uploaded',
         UPLOAD_ERR_NO_TMP_DIR => 'Missing a temporary folder',
         UPLOAD_ERR_CANT_WRITE => 'Failed to write file to disk',
-        UPLOAD_ERR_EXTENSION => 'A PHP extension stopped the file upload',
+        UPLOAD_ERR_EXTENSION  => 'A PHP extension stopped the file upload',
 
         // Our own
         self::UPLOAD_ERR_PHP_SIZE => 'The upload file exceeds the post_max_size or the upload_max_filesize directives in php.ini',
@@ -107,6 +107,7 @@ class FileUpload
         $this->server = $server;
         $this->filename_generator = $generator ?: new Simple();
         $this->fileContainer = new File();
+        $this->prepareMessages();
     }
 
     /**
@@ -257,16 +258,16 @@ class FileUpload
     public function processAll()
     {
         $content_range = $this->getContentRange();
-        $size = $this->getSize();
-        $this->files = array();
-        $upload = $this->upload;
+        $size          = $this->getSize();
+        $this->files   = array();
+        $upload        = $this->upload;
 
         if ($this->logger) {
             $this->logger->debug('Processing uploads', array(
                 'Content-range' => $content_range,
-                'Size' => $size,
-                'Upload array' => $upload,
-                'Server array' => $this->server,
+                'Size'          => $size,
+                'Upload array'  => $upload,
+                'Server array'  => $this->server,
             ));
         }
 
@@ -298,10 +299,10 @@ class FileUpload
                 $content_range
             );
         } else if ($upload && $upload['error'] != 0) {
-            $file = $this->getFileContainer();
-            $file->error = $this->messages[$upload['error']];
+            $file             = $this->getFileContainer();
+            $file->error      = $this->getMessage($upload['error']);
             $file->error_code = $upload['error'];
-            $this->files[] = $file;
+            $this->files[]    = $file;
         }
 
         return array($this->files, $this->getNewHeaders($this->files, $content_range));
@@ -356,7 +357,7 @@ class FileUpload
      */
     protected function process($tmp_name, $name, $size, $type, $error, $index = 0, $content_range = null)
     {
-        $file = $this->getFileContainer();
+        $file       = $this->getFileContainer();
         $file->name = $this->getFilename($name, $type, $index, $content_range, $tmp_name);
         $file->size = $this->fixIntegerOverflow(intval($size));
         $file->setTypeFromPath($tmp_name);
@@ -366,7 +367,7 @@ class FileUpload
             if ($this->validate($tmp_name, $file, $error, $index)) {
                 // Now that we passed the validation, we can work with the file
                 $upload_path = $this->pathresolver->getUploadPath();
-                $file_path = $this->pathresolver->getUploadPath($file->name);
+                $file_path   = $this->pathresolver->getUploadPath($file->name);
                 $append_file = $content_range && $this->filesystem->isFile($file_path) && $file->size > $this->getFilesize($file_path);
 
                 if ($tmp_name && $this->filesystem->isUploadedFile($tmp_name)) {
@@ -387,17 +388,17 @@ class FileUpload
 
                 if ($this->logger) {
                     $this->logger->debug('Processing ' . $file->name, array(
-                        'File path' => $file_path,
-                        'File object' => $file,
+                        'File path'       => $file_path,
+                        'File object'     => $file,
                         'Append to file?' => $append_file,
-                        'File exists?' => $this->filesystem->isFile($file_path),
-                        'File size' => $file_size,
+                        'File exists?'    => $this->filesystem->isFile($file_path),
+                        'File size'       => $file_size,
                     ));
                 }
 
                 if ($file->size == $file_size) {
                     // Yay, upload is complete!
-                    $file->path = $file_path;
+                    $file->path      = $file_path;
                     $file->completed = true;
                     $this->processCallbacksFor('completed', $file);
                 } else {
@@ -487,7 +488,7 @@ class FileUpload
      */
     protected function getConfigBytes($val)
     {
-        $val = trim($val);
+        $val  = trim($val);
         $last = strtolower($val[strlen($val) - 1]);
 
         switch ($last) {
@@ -522,18 +523,18 @@ class FileUpload
 
         if ($error !== 0) {
             // PHP error
-            $file->error = $this->messages[$error];
+            $file->error = $this->getMessage($error);
             $file->error_code = $error;
             return false;
         }
 
-        $content_length = $this->getContentLength();
-        $post_max_size = $this->getConfigBytes(ini_get('post_max_size'));
+        $content_length  = $this->getContentLength();
+        $post_max_size   = $this->getConfigBytes(ini_get('post_max_size'));
         $upload_max_size = $this->getConfigBytes(ini_get('upload_max_filesize'));
 
         if (($post_max_size && ($content_length > $post_max_size)) || ($upload_max_size && ($content_length > $upload_max_size))) {
             // Uploaded file exceeds maximum filesize PHP accepts in the configs
-            $file->error = $this->messages[self::UPLOAD_ERR_PHP_SIZE];
+            $file->error = $this->getMessage(self::UPLOAD_ERR_PHP_SIZE);
             $file->error_code = self::UPLOAD_ERR_PHP_SIZE;
             return false;
         }
@@ -564,5 +565,29 @@ class FileUpload
     public function addValidator(Validator $v)
     {
         $this->validators[] = $v;
+    }
+
+    /**
+     * Get an error message
+     * @param  int $code
+     * @return string
+     */
+    public function getMessage($code) {
+        return $this->messages[((string) $code)];
+    }
+
+    /**
+     * Converts $messages array into a hash with strings as keys
+     * This allows us to work with the keys and values as if it was a hash
+     * Which it really should be but, well, arrays in PHP, am I right?
+     */
+    private function prepareMessages() {
+        $prepared = array();
+
+        foreach($this->messages as $key => $msg) {
+            $prepared[(string) $key] = $msg;
+        }
+
+        $this->messages = $prepared;
     }
 }
