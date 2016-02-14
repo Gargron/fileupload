@@ -17,7 +17,7 @@ This package is available via Composer:
 ```json
 {
   "require": {
-    "gargron/fileupload": "~1.0.*"
+    "gargron/fileupload": "~1.1.*"
   }
 }
 ```
