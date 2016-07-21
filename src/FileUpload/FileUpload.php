@@ -278,7 +278,7 @@ class FileUpload
                     continue;
                 }
 
-                $this->files[] = $this->process(
+                $this->files[] = (object)(array)$this->process(
                     $tmp_name,
                     $upload['name'][$index],
                     $size ? $size : $upload['size'][$index],
