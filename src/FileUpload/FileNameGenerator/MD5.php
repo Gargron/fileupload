@@ -2,7 +2,7 @@
 
 namespace FileUpload\FileNameGenerator;
 
-use FileUpload\Validator\Simple;
+use FileUpload\Validator\Simple as FSimple;
 use FileUpload\FileUpload;
 
 class MD5 implements FileNameGenerator
