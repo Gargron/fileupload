@@ -54,4 +54,23 @@ class SimpleTest extends \PHPUnit_Framework_TestCase
 		$this->assertTrue($validator->validate($file, 10));
 		$this->assertEmpty($file->error);
 	}
+
+    public function testSetErrorMessages()
+    {
+        $file = new File();
+        $file->type = "text/plain";
+        $file->size = 10;
+
+        $validator = new Simple(10, array('image/png'));
+
+        $errorMessage = "Invalid file size";
+
+        $validator->setErrorMessages(array(
+            0 => $errorMessage
+        ));
+
+        $validator->validate($file, $file->size);
+
+        $this->assertEquals($errorMessage, $file->error);
+    }
 }

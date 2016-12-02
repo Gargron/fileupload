@@ -7,4 +7,11 @@
     </testsuite>
   </testsuites>
 
+
+  <filter>
+    <whitelist>
+      <directory>./src/FileUpload</directory>
+    </whitelist>
+  </filter>
+
 </phpunit>
