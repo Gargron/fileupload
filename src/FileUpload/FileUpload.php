@@ -489,18 +489,19 @@ class FileUpload
     protected function getConfigBytes($val)
     {
         $val  = trim($val);
+        $bytes = (int)(substr($val, 0, -1));
         $last = strtolower($val[strlen($val) - 1]);
 
         switch ($last) {
             case 'g':
-                $val *= 1024;
+                $bytes *= 1024;
             case 'm':
-                $val *= 1024;
+                $bytes *= 1024;
             case 'k':
-                $val *= 1024;
+                $bytes *= 1024;
         }
 
-        return $this->fixIntegerOverflow($val);
+        return $this->fixIntegerOverflow($bytes);
     }
 
     /**
