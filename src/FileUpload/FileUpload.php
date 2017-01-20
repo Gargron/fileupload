@@ -40,7 +40,7 @@ class FileUpload
      * Path resolver instance
      * @var FileNameGenerator
      */
-    protected $filename_generator;
+    protected $fileNameGenerator;
 
     /**
      * File system instance
@@ -105,8 +105,8 @@ class FileUpload
     {
         $this->upload = isset($upload) ? $upload : null;
         $this->server = $server;
-        $this->filename_generator = $generator ?: new Simple();
-        $this->fileContainer = new File();
+        $this->fileNameGenerator = $generator ?: new Simple();
+//        $this->fileContainer = new File();
         $this->prepareMessages();
     }
 
@@ -133,7 +133,7 @@ class FileUpload
      */
     public function setFileNameGenerator(FileNameGenerator $fng)
     {
-        $this->filename_generator = $fng;
+        $this->fileNameGenerator = $fng;
     }
 
     /**
@@ -141,7 +141,7 @@ class FileUpload
      */
     public function getFileNameGenerator()
     {
-        return $this->filename_generator;
+        return $this->fileNameGenerator;
     }
 
     /**
@@ -301,7 +301,7 @@ class FileUpload
         } else if ($upload && $upload['error'] != 0) {
             $file             = $this->getFileContainer();
             $file->error      = $this->getMessage($upload['error']);
-            $file->error_code = $upload['error'];
+            $file->errorCode = $upload['error'];
             $this->files[]    = $file;
         }
 
@@ -357,10 +357,10 @@ class FileUpload
      */
     protected function process($tmp_name, $name, $size, $type, $error, $index = 0, $content_range = null)
     {
-        $file       = $this->getFileContainer();
+        $file       = $this->fileContainer = new File($tmp_name);
         $file->name = $this->getFilename($name, $type, $index, $content_range, $tmp_name);
         $file->size = $this->fixIntegerOverflow(intval($size));
-        $file->setTypeFromPath($tmp_name);
+        $file->getMimeType($tmp_name);
 
         if ($file->name) { //since the md5 filename generator would return false if it's allowDuplicate property is set to false and the file already exists.
 
@@ -444,7 +444,7 @@ class FileUpload
     protected function getFilename($name, $type, $index, $content_range, $tmp_name)
     {
         $name = $this->trimFilename($name, $type, $index, $content_range);
-        return ($this->filename_generator->getFileName($name, $type, $tmp_name, $index, $content_range,$this));
+        return ($this->fileNameGenerator->getFileName($name, $type, $tmp_name, $index, $content_range,$this));
     }
 
     /**
@@ -525,7 +525,7 @@ class FileUpload
         if ($error !== 0) {
             // PHP error
             $file->error = $this->getMessage($error);
-            $file->error_code = $error;
+            $file->errorCode = $error;
             return false;
         }
 
@@ -536,7 +536,7 @@ class FileUpload
         if (($post_max_size && ($content_length > $post_max_size)) || ($upload_max_size && ($content_length > $upload_max_size))) {
             // Uploaded file exceeds maximum filesize PHP accepts in the configs
             $file->error = $this->getMessage(self::UPLOAD_ERR_PHP_SIZE);
-            $file->error_code = self::UPLOAD_ERR_PHP_SIZE;
+            $file->errorCode = self::UPLOAD_ERR_PHP_SIZE;
             return false;
         }
 
