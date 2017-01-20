@@ -3,7 +3,6 @@
 namespace FileUpload\FileNameGenerator;
 
 use FileUpload\FileSystem\Mock;
-use FileUpload\FileSystem\Simple;
 use FileUpload\FileUpload;
 use FileUpload\PathResolver\Simple as Path;
 
@@ -24,14 +23,17 @@ class MD5Test extends \PHPUnit_Framework_TestCase
             mkdir($playground_path . '/uploaded');
         }
 
-        copy($fixtures_path . '/real-image.jpg', $playground_path . '/' . md5('real-image') . '.jpg');
+        copy("$fixtures_path/real-image.jpg", "$playground_path/uploaded/real-image.jpg");
     }
 
     public function tearDown()
     {
-        $playground_path = __DIR__ . '/../../playground';
+        $file = __DIR__ . '/../../playground/';
+        $file .= md5(pathinfo('real-image.jpg', PATHINFO_FILENAME)) . '.jpg';
 
-        unlink($playground_path . '/'.md5('real-image').'.jpg');
+        if (file_exists($file)) {
+            unlink($file);
+        }
     }
 
     public function testGenerator()
@@ -80,6 +82,7 @@ class MD5Test extends \PHPUnit_Framework_TestCase
         $fileUpload = new FileUpload($file, $server, $generator);
         $fileUpload->setFileSystem(new Mock());
         $fileUpload->setPathResolver(new Path($playground_path));
+        $fileUpload->processAll();
 
         $this->assertFalse(
             $generator->getFileName($filename, "image/jpg", "asdf.jpg", 0, "100", $fileUpload)
@@ -92,7 +95,7 @@ class MD5Test extends \PHPUnit_Framework_TestCase
         $playground_path = __DIR__ . '/../../playground';
 
         $filename = "real-image.jpg";
-        $newFileName = md5("real-image").'.jpg';
+        $newFileName = md5("real-image") . '.jpg';
 
         $server = array('CONTENT_TYPE' => 'image/jpg', 'CONTENT_LENGTH' => 30321);
         $file = array(
@@ -106,6 +109,7 @@ class MD5Test extends \PHPUnit_Framework_TestCase
         $fileUpload = new FileUpload($file, $server, $generator);
         $fileUpload->setFileSystem(new Mock());
         $fileUpload->setPathResolver(new Path($playground_path));
+        $fileUpload->processAll();
 
         $this->assertEquals(
             $generator->getFileName($filename, "image/jpg", "asdf.jpg", 0, "100", $fileUpload),
