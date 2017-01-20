@@ -20,7 +20,7 @@ class File extends \SplFileInfo
      * Preset unknown mime type
      * @var string
      */
-    public $type = 'application/octet-stream';
+    protected $mimeType = 'application/octet-stream';
 
     /**
      * Is the file completely downloaded
@@ -36,7 +36,7 @@ class File extends \SplFileInfo
 
     protected function setMimeType($fileName)
     {
-        $this->type = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $fileName);
+        $this->mimeType = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $fileName);
     }
 
     public function getMimeType()
@@ -45,7 +45,7 @@ class File extends \SplFileInfo
             throw new \Exception('You cannot get the mimetype for a ' . $this->getType());
         }
 
-        return $this->type;
+        return $this->mimeType;
     }
 
     /**
@@ -54,6 +54,9 @@ class File extends \SplFileInfo
      */
     public function isImage()
     {
-        return in_array($this->type, array('image/gif', 'image/jpeg', 'image/pjpeg', 'image/png'));
+        return in_array(
+            $this->mimeType,
+            array('image/gif', 'image/jpeg', 'image/pjpeg', 'image/png')
+        );
     }
 }

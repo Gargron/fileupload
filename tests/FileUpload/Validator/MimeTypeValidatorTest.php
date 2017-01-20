@@ -2,73 +2,72 @@
 
 namespace FileUpload\Validator;
 
-
 use FileUpload\File;
 
 class MimeTypeValidatorTest extends \PHPUnit_Framework_TestCase
 {
 
-	protected $directory;
-	protected $validator;
-	protected $file;
+    protected $directory;
 
-	protected function setUp()
-	{
-		$this->directory = dirname(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR;
+    /**
+     * @var MimeTypeValidator
+     */
+    protected $validator;
 
-		$this->validator = new MimeTypeValidator(array("image/jpeg"));
-		$this->file = new File();
-	}
+    public function testValidMimeType()
+    {
+        $_FILES['file'] = array(
+            "name" => "real-image.jpg",
+            "tmp_name" => $this->directory . 'real-image.jpg',
+            "size" => 12,
+            "error" => 0
+        );
 
-	public function testValidMimeType()
-	{
-		$_FILES['file'] = array(
-			"name" => "real-image.jpg",
-			"tmp_name" => $this->directory . 'real-image.jpg',
-			"size" => 12,
-			"error" => 0
-		);
+        $file = new File($_FILES['file']['tmp_name']);
 
-		$this->file->type = "image/jpeg";
+        $this->assertTrue($this->validator->validate($file, $_FILES['file']['size']));
+    }
 
-		$this->assertTrue($this->validator->validate($this->file, $_FILES['file']['size']));
-	}
+    public function testInvalidMimeType()
+    {
+        $_FILES['file'] = array(
+            "name" => "fake-image.jpg",
+            "tmp_name" => $this->directory . 'fake-image.jpg',
+            "size" => 12,
+            "error" => 0
+        );
 
+        $file = new File($_FILES['file']['tmp_name']);
 
-	public function testInvalidMimeType()
-	{
-		$_FILES['file'] = array(
-			"name" => "fake-image.jpg",
-			"tmp_name" => $this->directory . 'fake-image.jpg',
-			"size" => 12,
-			"error" => 0
-		);
+        $this->assertFalse($this->validator->validate($file, $_FILES['file']['size']));
+    }
 
-		$this->file->type = "text/plain";
+    protected function setUp()
+    {
+        $this->directory = __DIR__ . '/../../fixtures/';
 
-		$this->assertFalse($this->validator->validate($this->file, $_FILES['file']['size']));
-	}
+        $this->validator = new MimeTypeValidator(array("image/jpeg"));
+    }
 
+    public function testSetErrorMessages()
+    {
+        $_FILES['file'] = array(
+            "name" => "fake-image.jpg",
+            "tmp_name" => $this->directory . 'fake-image.jpg',
+            "size" => 12,
+            "error" => 0
+        );
 
-	public function testSetErrorMessages()
-	{
-		$_FILES['file'] = array(
-			"name" => "fake-image.jpg",
-			"tmp_name" => $this->directory . 'fake-image.jpg',
-			"size" => 12,
-			"error" => 0
-		);
+        $file = new File($_FILES['file']['tmp_name']);
 
-		$this->file->type = "text/plain";
+        $errorMessage = "Invalid file type";
 
-		$errorMessage = "Invalid file type";
+        $this->validator->setErrorMessages(array(
+            0 => $errorMessage
+        ));
 
-		$this->validator->setErrorMessages(array(
-			0 => $errorMessage
-		));
+        $this->validator->validate($file, $_FILES['file']['size']);
 
-		$this->validator->validate($this->file, $_FILES['file']['size']);
-
-		$this->assertEquals($errorMessage, $this->file->error);
-	}
+        $this->assertEquals($errorMessage, $file->error);
+    }
 }
