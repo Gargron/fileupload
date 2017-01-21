@@ -6,60 +6,57 @@ use FileUpload\File;
 
 class SimpleTest extends \PHPUnit_Framework_TestCase
 {
-	public function testExceedSize()
-	{
-		$validator = new Simple(10, array());
-		$file = new File;
-		$file->size = 11;
+    public function testExceedSize()
+    {
+        $validator = new Simple(10);
+        $file = new File($_FILES['file']['tmp_name']);
 
-		$this->assertFalse($validator->validate($file, 11));
-		$this->assertNotEmpty($file->error);
-	}
+        $this->assertFalse($validator->validate($file, $_FILES['file']['size']));
+        $this->assertNotEmpty($file->error);
+    }
 
-	public function testExceed1MSize()
-	{
-		$validator = new Simple("1M", array());
-		$file = new File;
-		$file->size = 1048577;
+    public function testExceedMaxSize()
+    {
+        $validator = new Simple("20K");
 
-		$this->assertFalse($validator->validate($file, 11));
-		$this->assertNotEmpty($file->error);
-	}
+        $file = new File($_FILES['file']['tmp_name']);
 
-	/**
-	 * @expectedException \Exception
-	 */
-	public function testFailMaxSize1A()
-	{
-		$validator = new Simple("1A", array());
-	}
+        $this->assertFalse($validator->validate($file, 10));
+        $this->assertNotEmpty($file->error);
+    }
 
-	public function testWrongMime()
-	{
-		$validator = new Simple(10, array('image/png'));
-		$file = new File;
-		$file->type = 'application/json';
+    /**
+     * @expectedException \Exception
+     */
+    public function testFailMaxSize1A()
+    {
+        $validator = new Simple("1A", array());
+    }
 
-		$this->assertFalse($validator->validate($file, 11));
-		$this->assertNotEmpty($file->error);
-	}
+    public function testWrongMime()
+    {
 
-	public function testOk()
-	{
-		$validator = new Simple(10, array('image/png'));
-		$file = new File;
-		$file->size = 10;
-		$file->type = 'image/png';
+        $validator = new Simple("1M", array('image/png'));
 
-		$this->assertTrue($validator->validate($file, 10));
-		$this->assertEmpty($file->error);
-	}
+        $file = new File($_FILES['file']['tmp_name']);
+
+        $this->assertFalse($validator->validate($file, 7));
+        $this->assertNotEmpty($file->error);
+    }
+
+    public function testOk()
+    {
+        $validator = new Simple("40K", array('image/jpeg'));
+        $file = new File($_FILES['file']['tmp_name']);
+
+        $this->assertTrue($validator->validate($file, $_FILES['file']['size']));
+        $this->assertEmpty($file->error);
+    }
 
     public function testSetErrorMessages()
     {
-        $file = new File();
-        $file->type = "text/plain";
-        $file->size = 10;
+
+        $file = new File($_FILES['file']['tmp_name']);
 
         $validator = new Simple(10, array('image/png'));
 
@@ -69,8 +66,20 @@ class SimpleTest extends \PHPUnit_Framework_TestCase
             0 => $errorMessage
         ));
 
-        $validator->validate($file, $file->size);
+        $validator->validate($file, $_FILES['file']['size']);
 
         $this->assertEquals($errorMessage, $file->error);
+    }
+
+    public function setUp()
+    {
+        $this->directory = __DIR__ . '/../../fixtures/';
+
+        $_FILES['file'] = array(
+            "name" => "real-image.jpg",
+            "tmp_name" => $this->directory . 'real-image.jpg',
+            "size" => 12,
+            "error" => 0
+        );
     }
 }
