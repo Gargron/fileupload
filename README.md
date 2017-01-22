@@ -63,6 +63,15 @@ foreach($headers as $header => $value) {
 }
 
 echo json_encode(array('files' => $files));
+
+foreach($files as $file){
+    echo $file->getRealPath();
+    
+    var_dump($file->isFile());
+    
+    //you can call any method on an \SplFileInfo instance
+}
+
 ```
 
 ### Alternative usage via factory
