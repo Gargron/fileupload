@@ -46,7 +46,6 @@ class FileUploadTest extends \PHPUnit_Framework_TestCase {
 
     $this->assertCount(1, $files, 'Files array should contain one file');
     $this->assertEquals(0, $files[0]->error, 'Uploaded file should not have errors');
-    $this->assertNotEmpty($files[0]->path, 'Uploaded file should have path');
     $this->assertTrue($test, 'Complete callback should set $test to true');
   }
 
