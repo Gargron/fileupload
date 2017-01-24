@@ -34,12 +34,6 @@ You can grep the source code for "TODO" to find things you could help finishing.
 // Simple validation (max file size 2MB and only two allowed mime types)
 $validator = new FileUpload\Validator\Simple(1024 * 1024 * 2, ['image/png', 'image/jpg']);
 
-// Alternatively, if you don't want to validate both size and type at the same time, you could use:
-$mimeTypeValidator = new \FileUpload\Validator\MimeTypeValidator(["image/png", "image/jpeg"]);
-
-// And/or (the 1st parameter is the max size while the 2nd is the min size):
-$sizeValidator = new \FileUpload\Validator\SizeValidator("3M", "1M");
-
 // Simple path resolver, where uploads will be put
 $pathresolver = new FileUpload\PathResolver\Simple('/my/uploads/dir');
 
@@ -85,7 +79,44 @@ $factory = new FileUploadFactory(new PathResolver\Simple('/my/uploads/dir'), new
 $instance = $factory->create($_FILES['files'], $_SERVER);
 ```
 
-### Validator
+### Validators
+
+There are currently 4 validators shipped with `FileUpload` :
+
+ - `Simple`
+ 
+ ```php
+ // Simple validation (max file size 2MB and only two allowed mime types)
+ $validator = new FileUpload\Validator\Simple(1024 * 1024 * 2, ['image/png', 'image/jpg']);
+
+ ```
+
+ - `MimeTypeValidator` 
+
+ ```php
+ $mimeTypeValidator = new \FileUpload\Validator\MimeTypeValidator(["image/png", "image/jpeg"]);
+ ```
+
+- `SizeValidator`
+```php
+// The 1st parameter is the maximum size while the 2nd is the minimum size
+$sizeValidator = new \FileUpload\Validator\SizeValidator("3M", "1M");
+```
+
+- `DimensionValidator`
+
+```php
+
+$config = [
+  'width' => 400,
+  'height' => 500
+]; //can also contain "min_width", "max_width", "min_height" and "max_height"
+
+$dimensionValidator = new \FileUpload\Validator\DimensionValidator($config);
+
+```
+
+> Remember to register new validator(s) by `$fileuploadInstance->addValidator($validator);`
 
 If you want you can use the common human readable format for filesizes like "1M", "1G", just pass the String as the first Argument.
 
