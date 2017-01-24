@@ -344,7 +344,7 @@ class FileUpload
 
                 if ($file->size == $file_size) {
                     // Yay, upload is complete!
-                    $file->completed = true;
+                    $completed = true;
                     $this->processCallbacksFor('completed', $file);
                 } else {
                     $file->size = $file_size;
@@ -358,7 +358,12 @@ class FileUpload
             }
         }
 
-        return new $file($file_path);
+        //This is re-instantiated so as to allow \SplFileInfo pick up metadata about the uploaded file
+        $fileInfo = new $file($file_path);
+
+        $fileInfo->completed = $completed ?: false;
+
+        return $fileInfo;
     }
 
     /**
