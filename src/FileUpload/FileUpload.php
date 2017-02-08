@@ -355,6 +355,8 @@ class FileUpload
                         $file->error = 'abort';
                     }
                 }
+            } else {
+                throw new \Exception('Invalid upload');
             }
         }
 
