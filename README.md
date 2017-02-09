@@ -56,7 +56,7 @@ foreach($headers as $header => $value) {
     header($header . ': ' . $value);
 }
 
-echo json_encode(array('files' => $files));
+echo json_encode(['files' => $files]);
 
 foreach($files as $file){
     echo $file->getRealPath();
