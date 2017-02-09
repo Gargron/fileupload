@@ -131,7 +131,7 @@ Here is a listing of the possible values (B => B; KB => K; MB => M; GB => G). Th
 
 With the FileNameGenerator you have the possibility to change the Filename the uploaded files will be saved as.
 
-```
+```php
 $fileupload = new FileUpload\FileUpload($_FILES['files'], $_SERVER);
 $filenamegenerator = new FileUpload\FileNameGenerator\Simple();
 $fileupload->setFileNameGenerator($filenamegenerator);
