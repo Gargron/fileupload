@@ -98,23 +98,20 @@ There are currently 4 validators shipped with `FileUpload` :
  ```
 
 - `SizeValidator`
-```php
-// The 1st parameter is the maximum size while the 2nd is the minimum size
-$sizeValidator = new \FileUpload\Validator\SizeValidator('3M', '1M');
-```
+ ```php
+ // The 1st parameter is the maximum size while the 2nd is the minimum size
+ $sizeValidator = new \FileUpload\Validator\SizeValidator('3M', '1M');
+ ```
 
 - `DimensionValidator`
+ ```php
+ $config = [
+   'width' => 400,
+   'height' => 500
+ ]; //can also contain 'min_width', 'max_width', 'min_height' and 'max_height'
 
-```php
-
-$config = [
-  'width' => 400,
-  'height' => 500
-]; //can also contain 'min_width', 'max_width', 'min_height' and 'max_height'
-
-$dimensionValidator = new \FileUpload\Validator\DimensionValidator($config);
-
-```
+ $dimensionValidator = new \FileUpload\Validator\DimensionValidator($config);
+ ```
 
 > Remember to register new validator(s) by `$fileuploadInstance->addValidator($validator);`
 
