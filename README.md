@@ -88,7 +88,6 @@ $instance = $factory->create($_FILES['files'], $_SERVER);
 There are currently 4 validators shipped with `FileUpload`:
 
  - `Simple`
- 
  ```php
  // Simple validation (max file size 2MB and only two allowed mime types)
  $validator = new FileUpload\Validator\Simple(1024 * 1024 * 2, ['image/png', 'image/jpg']);
@@ -96,7 +95,6 @@ There are currently 4 validators shipped with `FileUpload`:
  ```
 
  - `MimeTypeValidator` 
-
  ```php
  $mimeTypeValidator = new FileUpload\Validator\MimeTypeValidator(['image/png', 'image/jpg']);
  ```
@@ -144,24 +142,21 @@ We have placed some example generators like md5 who saves the file under the md5
 
 Currently implemented events:
 
-* `completed`
-
+- `completed`
 ```php
 $fileupload->addCallback('completed', function(FileUpload\File $file) {
     // Whoosh!
 });
 ```
 
-* `beforeValidation`
-
+- `beforeValidation`
 ```php
 $fileUploader->addCallback('beforeValidation', function (FileUpload\File $file) {
     // About to validate the upload;
 });
 ```
 
-* `afterValidation`
-
+- `afterValidation`
 ```php
 $fileUploader->addCallback('afterValidation', function (FileUpload\File $file) {
     // Yay, we got only valid uploads
