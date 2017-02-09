@@ -61,7 +61,7 @@ echo json_encode(['files' => $files]);
 foreach($files as $file){
     echo $file->getRealPath();
     
-    // you can call any method on an SplFileInfo instance
+    // Call any method on an SplFileInfo instance
     var_dump($file->isFile());
 }
 
@@ -118,7 +118,7 @@ There are currently 4 validators shipped with `FileUpload`:
 
 > Remember to register new validator(s) by `$fileuploadInstance->addValidator($validator);`
 
-If you want you can use the common human readable format for filesizes like '1M', '1G', just pass the String as the first Argument.
+If you want you can use the common human readable format for filesizes like '1M', '1G', just pass the String as the first argument.
 
 ```
 $validator = new FileUpload\Validator\Simple('10M', ['image/png', 'image/jpg']);
