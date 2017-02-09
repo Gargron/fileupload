@@ -24,7 +24,7 @@ This package is available via Composer:
 
 ### Status
 
-The unit test suite covers simple uploads, and the library "works on my machine," as it were. You are welcome to contribute.
+The unit test suite covers simple uploads and the library "works on my machine", as it were. You are welcome to contribute.
 
 You can grep the source code for `TODO` to find things you could help finishing.
 
@@ -64,7 +64,6 @@ foreach($files as $file){
     // Call any method on an SplFileInfo instance
     var_dump($file->isFile());
 }
-
 ```
 
 ### Alternative usage via factory
@@ -111,7 +110,7 @@ There are currently 4 validators shipped with `FileUpload`:
       'width' => 400,
       'height' => 500
  ]; 
- // can also contain 'min_width', 'max_width', 'min_height' and 'max_height'
+ // Can also contain 'min_width', 'max_width', 'min_height' and 'max_height'
 
  $dimensionValidator = new FileUpload\Validator\DimensionValidator($config);
  ```
@@ -128,7 +127,7 @@ Here is a listing of the possible values (B => B; KB => K; MB => M; GB => G). Th
 
 ### FileNameGenerator
 
-With the FileNameGenerator you have the possibility to change the Filename the uploaded files will be saved as.
+With the `FileNameGenerator` you have the possibility to change the filename the uploaded files will be saved as.
 
 ```php
 $fileupload = new FileUpload\FileUpload($_FILES['files'], $_SERVER);
