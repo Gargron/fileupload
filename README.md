@@ -61,9 +61,8 @@ echo json_encode(['files' => $files]);
 foreach($files as $file){
     echo $file->getRealPath();
     
-    var_dump($file->isFile());
-    
     // you can call any method on an SplFileInfo instance
+    var_dump($file->isFile());
 }
 
 ```
