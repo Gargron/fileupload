@@ -26,7 +26,7 @@ This package is available via Composer:
 
 The unit test suite covers simple uploads, and the library "works on my machine," as it were. You are welcome to contribute.
 
-You can grep the source code for "TODO" to find things you could help finishing.
+You can grep the source code for `TODO` to find things you could help finishing.
 
 ### Usage
 
@@ -72,8 +72,8 @@ foreach($files as $file){
 
 ```php
 $factory = new FileUploadFactory(new PathResolver\Simple('/my/uploads/dir'), new FileSystem\Simple(), array(
-  new \FileUpload\Validator\MimeTypeValidator(["image/png", "image/jpeg"]),
-  new \FileUpload\Validator\SizeValidator("3M", "1M") // etc
+  new \FileUpload\Validator\MimeTypeValidator(['image/png', 'image/jpg']),
+  new \FileUpload\Validator\SizeValidator('3M', '1M') // etc
 ));
 
 $instance = $factory->create($_FILES['files'], $_SERVER);
@@ -94,13 +94,13 @@ There are currently 4 validators shipped with `FileUpload` :
  - `MimeTypeValidator` 
 
  ```php
- $mimeTypeValidator = new \FileUpload\Validator\MimeTypeValidator(["image/png", "image/jpeg"]);
+ $mimeTypeValidator = new \FileUpload\Validator\MimeTypeValidator(['image/png', 'image/jpg']);
  ```
 
 - `SizeValidator`
 ```php
 // The 1st parameter is the maximum size while the 2nd is the minimum size
-$sizeValidator = new \FileUpload\Validator\SizeValidator("3M", "1M");
+$sizeValidator = new \FileUpload\Validator\SizeValidator('3M', '1M');
 ```
 
 - `DimensionValidator`
@@ -110,7 +110,7 @@ $sizeValidator = new \FileUpload\Validator\SizeValidator("3M", "1M");
 $config = [
   'width' => 400,
   'height' => 500
-]; //can also contain "min_width", "max_width", "min_height" and "max_height"
+]; //can also contain 'min_width', 'max_width', 'min_height' and 'max_height'
 
 $dimensionValidator = new \FileUpload\Validator\DimensionValidator($config);
 
@@ -118,10 +118,10 @@ $dimensionValidator = new \FileUpload\Validator\DimensionValidator($config);
 
 > Remember to register new validator(s) by `$fileuploadInstance->addValidator($validator);`
 
-If you want you can use the common human readable format for filesizes like "1M", "1G", just pass the String as the first Argument.
+If you want you can use the common human readable format for filesizes like '1M', '1G', just pass the String as the first Argument.
 
 ```
-$validator = new FileUpload\Validator\Simple("10M", ['image/png', 'image/jpg']);
+$validator = new FileUpload\Validator\Simple('10M', ['image/png', 'image/jpg']);
 ```
 
 Here is a listing of the possible values (B => B; KB => K; MB => M; GB => G). These values are Binary convention so basing on 1024.
