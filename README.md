@@ -63,7 +63,7 @@ foreach($files as $file){
     
     var_dump($file->isFile());
     
-    //you can call any method on an \SplFileInfo instance
+    //you can call any method on an SplFileInfo instance
 }
 
 ```
@@ -75,8 +75,8 @@ $factory = new FileUploadFactory(
     new PathResolver\Simple('/my/uploads/dir'), 
     new FileSystem\Simple(), 
     [
-        new \FileUpload\Validator\MimeTypeValidator(['image/png', 'image/jpg']),
-        new \FileUpload\Validator\SizeValidator('3M', '1M') // etc
+        new FileUpload\Validator\MimeTypeValidator(['image/png', 'image/jpg']),
+        new FileUpload\Validator\SizeValidator('3M', '1M') // etc
     ]
 );
 
@@ -98,13 +98,13 @@ There are currently 4 validators shipped with `FileUpload`:
  - `MimeTypeValidator` 
 
  ```php
- $mimeTypeValidator = new \FileUpload\Validator\MimeTypeValidator(['image/png', 'image/jpg']);
+ $mimeTypeValidator = new FileUpload\Validator\MimeTypeValidator(['image/png', 'image/jpg']);
  ```
 
  - `SizeValidator`
  ```php
  // The 1st parameter is the maximum size while the 2nd is the minimum size
- $sizeValidator = new \FileUpload\Validator\SizeValidator('3M', '1M');
+ $sizeValidator = new FileUpload\Validator\SizeValidator('3M', '1M');
  ```
 
  - `DimensionValidator`
@@ -114,7 +114,7 @@ There are currently 4 validators shipped with `FileUpload`:
       'height' => 500
  ]; //can also contain 'min_width', 'max_width', 'min_height' and 'max_height'
 
- $dimensionValidator = new \FileUpload\Validator\DimensionValidator($config);
+ $dimensionValidator = new FileUpload\Validator\DimensionValidator($config);
  ```
 
 > Remember to register new validator(s) by `$fileuploadInstance->addValidator($validator);`
