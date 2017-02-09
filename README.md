@@ -63,7 +63,7 @@ foreach($files as $file){
     
     var_dump($file->isFile());
     
-    //you can call any method on an SplFileInfo instance
+    // you can call any method on an SplFileInfo instance
 }
 
 ```
@@ -76,7 +76,8 @@ $factory = new FileUploadFactory(
     new FileSystem\Simple(), 
     [
         new FileUpload\Validator\MimeTypeValidator(['image/png', 'image/jpg']),
-        new FileUpload\Validator\SizeValidator('3M', '1M') // etc
+        new FileUpload\Validator\SizeValidator('3M', '1M') 
+        // etc
     ]
 );
 
@@ -112,7 +113,8 @@ There are currently 4 validators shipped with `FileUpload`:
  $config = [
       'width' => 400,
       'height' => 500
- ]; //can also contain 'min_width', 'max_width', 'min_height' and 'max_height'
+ ]; 
+ // can also contain 'min_width', 'max_width', 'min_height' and 'max_height'
 
  $dimensionValidator = new FileUpload\Validator\DimensionValidator($config);
  ```
