@@ -26,7 +26,7 @@ This package is available via Composer:
 
 The unit test suite covers simple uploads, and the library "works on my machine," as it were. You are welcome to contribute.
 
-You can grep the source code for "TODO" to find things you could help finishing.
+You can grep the source code for `TODO` to find things you could help finishing.
 
 ### Usage
 
@@ -53,7 +53,7 @@ list($files, $headers) = $fileupload->processAll();
 
 // Outputting it, for example like this
 foreach($headers as $header => $value) {
-  header($header . ': ' . $value);
+    header($header . ': ' . $value);
 }
 
 echo json_encode(array('files' => $files));
@@ -71,17 +71,21 @@ foreach($files as $file){
 ### Alternative usage via factory
 
 ```php
-$factory = new FileUploadFactory(new PathResolver\Simple('/my/uploads/dir'), new FileSystem\Simple(), array(
-  new \FileUpload\Validator\MimeTypeValidator(["image/png", "image/jpeg"]),
-  new \FileUpload\Validator\SizeValidator("3M", "1M") // etc
-));
+$factory = new FileUploadFactory(
+    new PathResolver\Simple('/my/uploads/dir'), 
+    new FileSystem\Simple(), 
+    [
+        new \FileUpload\Validator\MimeTypeValidator(['image/png', 'image/jpg']),
+        new \FileUpload\Validator\SizeValidator('3M', '1M') // etc
+    ]
+);
 
 $instance = $factory->create($_FILES['files'], $_SERVER);
 ```
 
 ### Validators
 
-There are currently 4 validators shipped with `FileUpload` :
+There are currently 4 validators shipped with `FileUpload`:
 
  - `Simple`
  
@@ -94,34 +98,31 @@ There are currently 4 validators shipped with `FileUpload` :
  - `MimeTypeValidator` 
 
  ```php
- $mimeTypeValidator = new \FileUpload\Validator\MimeTypeValidator(["image/png", "image/jpeg"]);
+ $mimeTypeValidator = new \FileUpload\Validator\MimeTypeValidator(['image/png', 'image/jpg']);
  ```
 
-- `SizeValidator`
-```php
-// The 1st parameter is the maximum size while the 2nd is the minimum size
-$sizeValidator = new \FileUpload\Validator\SizeValidator("3M", "1M");
-```
+ - `SizeValidator`
+ ```php
+ // The 1st parameter is the maximum size while the 2nd is the minimum size
+ $sizeValidator = new \FileUpload\Validator\SizeValidator('3M', '1M');
+ ```
 
-- `DimensionValidator`
+ - `DimensionValidator`
+ ```php
+ $config = [
+      'width' => 400,
+      'height' => 500
+ ]; //can also contain 'min_width', 'max_width', 'min_height' and 'max_height'
 
-```php
-
-$config = [
-  'width' => 400,
-  'height' => 500
-]; //can also contain "min_width", "max_width", "min_height" and "max_height"
-
-$dimensionValidator = new \FileUpload\Validator\DimensionValidator($config);
-
-```
+ $dimensionValidator = new \FileUpload\Validator\DimensionValidator($config);
+ ```
 
 > Remember to register new validator(s) by `$fileuploadInstance->addValidator($validator);`
 
-If you want you can use the common human readable format for filesizes like "1M", "1G", just pass the String as the first Argument.
+If you want you can use the common human readable format for filesizes like '1M', '1G', just pass the String as the first Argument.
 
 ```
-$validator = new FileUpload\Validator\Simple("10M", ['image/png', 'image/jpg']);
+$validator = new FileUpload\Validator\Simple('10M', ['image/png', 'image/jpg']);
 ```
 
 Here is a listing of the possible values (B => B; KB => K; MB => M; GB => G). These values are Binary convention so basing on 1024.
@@ -130,7 +131,7 @@ Here is a listing of the possible values (B => B; KB => K; MB => M; GB => G). Th
 
 With the FileNameGenerator you have the possibility to change the Filename the uploaded files will be saved as.
 
-```
+```php
 $fileupload = new FileUpload\FileUpload($_FILES['files'], $_SERVER);
 $filenamegenerator = new FileUpload\FileNameGenerator\Simple();
 $fileupload->setFileNameGenerator($filenamegenerator);
@@ -146,25 +147,23 @@ Currently implemented events:
 
 ```php
 $fileupload->addCallback('completed', function(FileUpload\File $file) {
-  // Whoosh!
+    // Whoosh!
 });
 ```
 
 * `beforeValidation`
 
 ```php
-$fileUploader->addCallback('beforeValidation', function (FileUpload\File $file
-) {
-  // About to validate the upload;
+$fileUploader->addCallback('beforeValidation', function (FileUpload\File $file) {
+    // About to validate the upload;
 });
 ```
 
 * `afterValidation`
 
 ```php
-$fileUploader->addCallback('afterValidation', function (FileUpload\File $file
-) {
-  // Yay, we got only valid uploads
+$fileUploader->addCallback('afterValidation', function (FileUpload\File $file) {
+    // Yay, we got only valid uploads
 });
 ```
 
