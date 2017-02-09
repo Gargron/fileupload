@@ -32,7 +32,7 @@ You can grep the source code for `TODO` to find things you could help finishing.
 
 ```php
 // Simple validation (max file size 2MB and only two allowed mime types)
-$validator = new FileUpload\Validator\Simple(1024 * 1024 * 2, ['image/png', 'image/jpg']);
+$validator = new FileUpload\Validator\Simple('2M', ['image/png', 'image/jpg']);
 
 // Simple path resolver, where uploads will be put
 $pathresolver = new FileUpload\PathResolver\Simple('/my/uploads/dir');
@@ -89,7 +89,7 @@ There are currently 4 validators shipped with `FileUpload`:
  - `Simple`
  ```php
  // Simple validation (max file size 2MB and only two allowed mime types)
- $validator = new FileUpload\Validator\Simple(1024 * 1024 * 2, ['image/png', 'image/jpg']);
+ $validator = new FileUpload\Validator\Simple('2M', ['image/png', 'image/jpg']);
 
  ```
 
@@ -117,13 +117,13 @@ There are currently 4 validators shipped with `FileUpload`:
 
 > Remember to register new validator(s) by `$fileuploadInstance->addValidator($validator);`
 
-If you want you can use the common human readable format for filesizes like '1M', '1G', just pass the String as the first argument.
+If you want you can use the common human readable format for filesizes like '1M', '1G', just pass the string as the first argument.
 
 ```
 $validator = new FileUpload\Validator\Simple('10M', ['image/png', 'image/jpg']);
 ```
 
-Here is a listing of the possible values (B => B; KB => K; MB => M; GB => G). These values are Binary convention so basing on 1024.
+Here is a listing of the possible values (B => B; KB => K; MB => M; GB => G). These values are binary convention so basing on 1024.
 
 ### FileNameGenerator
 
