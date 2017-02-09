@@ -74,10 +74,10 @@ foreach($files as $file){
 $factory = new FileUploadFactory(
     new PathResolver\Simple('/my/uploads/dir'), 
     new FileSystem\Simple(), 
-    array(
+    [
         new \FileUpload\Validator\MimeTypeValidator(['image/png', 'image/jpg']),
         new \FileUpload\Validator\SizeValidator('3M', '1M') // etc
-    )
+    ]
 );
 
 $instance = $factory->create($_FILES['files'], $_SERVER);
