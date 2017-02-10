@@ -236,7 +236,7 @@ class FileUpload
                     continue;
                 }
 
-                $this->files[] = (object)(array)$this->process(
+                $this->files[] = $this->process(
                     $tmp_name,
                     $upload['name'][$index],
                     $size ? $size : $upload['size'][$index],
@@ -304,7 +304,10 @@ class FileUpload
      */
     protected function process($tmp_name, $name, $size, $type, $error, $index = 0, $content_range = null)
     {
-        $file = $this->fileContainer = new File($tmp_name);
+	    $file = new File( $tmp_name );
+	    if ( $index == 0 ) {
+		    $this->fileContainer = $file;
+	    }
         $file->name = $this->getFilename($name, $type, $index, $content_range, $tmp_name);
         $file->size = $this->fixIntegerOverflow(intval($size));
 
