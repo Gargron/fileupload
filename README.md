@@ -135,7 +135,41 @@ $filenamegenerator = new FileUpload\FileNameGenerator\Simple();
 $fileupload->setFileNameGenerator($filenamegenerator);
 ```
 
-We have placed some example generators like md5 who saves the file under the md5 hash of the filename or the random generator witch uses an random string. The default (the simple generator to be more precise) will save the file by its original name.
+- `Custom`
+```php
+$customGenerator = new FileUpload\FileNameGenerator\Custom($provider);
+//$provider can be a string (in which case it is returned as is)
+//It can also be a callable or a closure which receives arguments in the other of $source_name, $type, $tmp_name, $index, $content_range, FileUpload $upload
+```
+
+- `MD5`
+```php
+$md5Generator = new FileUpload\FileNameGenerator\MD5($allowOverride);
+//$allowOverride should be a boolean. A true value would overwrite the file if it exists while a false value would not allow the file to be uploaded since it already exists.
+```
+
+- `Random`
+```php
+$randomGenerator = new FileUpload\FileNameGenerator\Random($length);
+//Where $length is the maximum length of the generator random name
+
+```
+
+- `Simple`
+```php
+$simpleGenerator = new FileUpload\FileNameGenerator\Simple();
+//Saves a file by it's original name
+
+```
+
+- `Slug`
+```php
+$slugGenerator = new FileUpload\FileNameGenerator\Slug();
+//This generator slugifies the name of the uploaded file(s)
+```
+> Remember to register new validator(s) by `$fileuploadInstance->setFileNameGenerator($generator);`
+
+> Every call to `setFileNameGenerator` overrides the currently set `$generator`
 
 ### Callbacks
 
