@@ -304,7 +304,7 @@ class FileUpload
      */
     protected function process($tmp_name, $name, $size, $type, $error, $index = 0, $content_range = null)
     {
-	    $this->fileContainer = $file = new File( $tmp_name );
+        $this->fileContainer = $file = new File($tmp_name);
         $file->name = $this->getFilename($name, $type, $index, $content_range, $tmp_name);
         $file->size = $this->fixIntegerOverflow(intval($size));
 
