@@ -307,6 +307,7 @@ class FileUpload
         $this->fileContainer = $file = new File($tmp_name);
         $file->name = $this->getFilename($name, $type, $index, $content_range, $tmp_name);
         $file->size = $this->fixIntegerOverflow(intval($size));
+        $complteted = false;
 
         if ($file->name) { //since the md5 filename generator would return false if it's allowDuplicate property is set to false and the file already exists.
 
@@ -357,7 +358,8 @@ class FileUpload
                 }
 
                 $file = new $file($file_path);
-                $file->completed = $completed ?: true;
+                $file->completed = $completed;
+                $file->size = $file_size;
             }
         }
 
@@ -428,7 +430,6 @@ class FileUpload
      */
     protected function validate($tmp_name, File $file, $error, $index)
     {
-
         $this->processCallbacksFor('beforeValidation', $file);
 
         if ($error !== 0) {
