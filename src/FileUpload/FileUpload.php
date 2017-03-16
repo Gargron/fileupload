@@ -307,7 +307,7 @@ class FileUpload
         $this->fileContainer = $file = new File($tmp_name);
         $file->name = $this->getFilename($name, $type, $index, $content_range, $tmp_name);
         $file->size = $this->fixIntegerOverflow(intval($size));
-        $complteted = false;
+        $completed = false;
 
         if ($file->name) { //since the md5 filename generator would return false if it's allowDuplicate property is set to false and the file already exists.
 
