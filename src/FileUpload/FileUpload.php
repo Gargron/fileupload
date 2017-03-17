@@ -346,7 +346,6 @@ class FileUpload
                 if ($file->size == $file_size) {
                     // Yay, upload is complete!
                     $completed = true;
-                    $this->processCallbacksFor('completed', $file);
                 } else {
                     $file->size = $file_size;
 
@@ -360,6 +359,10 @@ class FileUpload
                 $file = new $file($file_path);
                 $file->completed = $completed;
                 $file->size = $file_size;
+
+                if ($completed) {
+                    $this->processCallbacksFor('completed', $file);
+                }
             }
         }
 
