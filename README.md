@@ -59,10 +59,13 @@ foreach($headers as $header => $value) {
 echo json_encode(['files' => $files]);
 
 foreach($files as $file){
-    echo $file->getRealPath();
-    
-    // Call any method on an SplFileInfo instance
-    var_dump($file->isFile());
+    //Remeber to check if the upload was completed
+    if ($file->completed) {
+        echo $file->getRealPath();
+        
+        // Call any method on an SplFileInfo instance
+        var_dump($file->isFile());
+    }
 }
 ```
 
