@@ -2,18 +2,19 @@
 
 namespace FileUpload\PathResolver;
 
-interface PathResolver {
-  /**
-   * Get absolute final destination path
-   * @param  string $name
-   * @return string
-   */
-  public function getUploadPath($name = null);
+interface PathResolver
+{
+    /**
+     * Get absolute final destination path
+     * @param  string $name
+     * @return string
+     */
+    public function getUploadPath($name = null);
 
-  /**
-   * Ensure consistent name
-   * @param  string $name
-   * @return string
-   */
-  public function upcountName($name);
+    /**
+     * Ensure consistent name
+     * @param  string $name
+     * @return string
+     */
+    public function upcountName($name);
 }

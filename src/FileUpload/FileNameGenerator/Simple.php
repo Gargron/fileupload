@@ -13,7 +13,8 @@ use FileUpload\PathResolver\PathResolver;
 use FileUpload\FileUpload;
 use FileUpload\Util;
 
-class Simple implements FileNameGenerator {
+class Simple implements FileNameGenerator
+{
 
     /**
      * Pathresolver
@@ -29,12 +30,12 @@ class Simple implements FileNameGenerator {
 
     /**
      * Get file_name
-     * @param  string       $source_name
-     * @param  string       $type
-     * @param  string       $tmp_name
-     * @param  integer      $index
-     * @param  string       $content_range
-     * @param  FileUpload   $upload
+     * @param  string     $source_name
+     * @param  string     $type
+     * @param  string     $tmp_name
+     * @param  integer    $index
+     * @param  string     $content_range
+     * @param  FileUpload $upload
      * @return string
      */
     public function getFileName($source_name, $type, $tmp_name, $index, $content_range, FileUpload $upload)
@@ -42,7 +43,7 @@ class Simple implements FileNameGenerator {
         $this->filesystem = $upload->getFileSystem();
         $this->pathresolver = $upload->getPathResolver();
 
-        return($this->getUniqueFilename($source_name, $type, $index, $content_range));
+        return ($this->getUniqueFilename($source_name, $type, $index, $content_range));
     }
 
     /**
@@ -53,15 +54,16 @@ class Simple implements FileNameGenerator {
      * @param  array   $content_range
      * @return string
      */
-    protected function getUniqueFilename($name, $type, $index, $content_range) {
-        while($this->filesystem->isDir($this->pathresolver->getUploadPath($name))) {
+    protected function getUniqueFilename($name, $type, $index, $content_range)
+    {
+        while ($this->filesystem->isDir($this->pathresolver->getUploadPath($name))) {
             $name = $this->pathresolver->upcountName($name);
         }
 
         $uploaded_bytes = Util::fixIntegerOverflow(intval($content_range[1]));
 
-        while($this->filesystem->isFile($this->pathresolver->getUploadPath($name))) {
-            if($uploaded_bytes == $this->filesystem->getFilesize($this->pathresolver->getUploadPath($name))) {
+        while ($this->filesystem->isFile($this->pathresolver->getUploadPath($name))) {
+            if ($uploaded_bytes == $this->filesystem->getFilesize($this->pathresolver->getUploadPath($name))) {
                 break;
             }
 
