@@ -37,6 +37,10 @@ class SlugTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($generator->getFileName($filename, "image/jpg", "asdf.jpg", 0, 100 ,$fileUpload), $expectedFilename);
 
+        $filename = "Attività può più lunedì perchè.jpg";
+        $expectedFilename = "attivita-puo-piu-lunedi-perche.jpg";
+        $this->assertEquals($generator->getFileName($filename, "image/jpg", "asdf.jpg", 0, 100 ,$fileUpload), $expectedFilename);
+
     }
 
 }
