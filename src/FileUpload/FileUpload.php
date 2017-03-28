@@ -304,10 +304,7 @@ class FileUpload
      */
     protected function process($tmp_name, $name, $size, $type, $error, $index = 0, $content_range = null)
     {
-	    $file = new File( $tmp_name );
-	    if ( $index == 0 ) {
-		    $this->fileContainer = $file;
-	    }
+        $this->fileContainer = $file = new File($tmp_name);
         $file->name = $this->getFilename($name, $type, $index, $content_range, $tmp_name);
         $file->size = $this->fixIntegerOverflow(intval($size));
 
@@ -358,15 +355,13 @@ class FileUpload
                         $file->error = 'abort';
                     }
                 }
+
+                $file = new $file($file_path);
+                $file->completed = $completed ?: true;
             }
         }
 
-        //This is re-instantiated so as to allow \SplFileInfo pick up metadata about the uploaded file
-        $fileInfo = new $file($file_path);
-
-        $fileInfo->completed = $completed ?: false;
-
-        return $fileInfo;
+        return $file;
     }
 
     /**
