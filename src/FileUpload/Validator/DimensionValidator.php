@@ -68,32 +68,32 @@ class DimensionValidator implements Validator
         //Plus that would defeat the ability of users setting up custom error messages
 
         if (isset($this->config[self::WIDTH]) && $this->config[self::WIDTH] !== $width) {
-            $file->error = $this->formatErrorMessage(self::WIDTH, $width);
+            $file->error = $this->formatErrorMessage(self::WIDTH, $this->config[self::WIDTH]);
             $valid = false;
         }
 
         if (isset($this->config[self::MIN_WIDTH]) && $this->config[self::MIN_WIDTH] > $width) {
-            $file->error = $this->formatErrorMessage(self::MIN_WIDTH, $width);
+            $file->error = $this->formatErrorMessage(self::MIN_WIDTH, $this->config[self::MIN_WIDTH]);
             $valid = false;
         }
 
         if (isset($this->config[self::MAX_WIDTH]) && $this->config[self::MAX_WIDTH] < $width) {
-            $file->error = $this->formatErrorMessage(self::MAX_WIDTH, $width);
+            $file->error = $this->formatErrorMessage(self::MAX_WIDTH, $this->config[self::MAX_WIDTH]);
             $valid = false;
         }
 
         if (isset($this->config[self::HEIGHT]) && $this->config[self::HEIGHT] !== $height) {
-            $file->error = $this->formatErrorMessage(self::HEIGHT, $height);
+            $file->error = $this->formatErrorMessage(self::HEIGHT, $this->config[self::HEIGHT]);
             $valid = false;
         }
 
         if (isset($this->config[self::MIN_HEIGHT]) && $this->config[self::MIN_HEIGHT] > $height) {
-            $file->error = $this->formatErrorMessage(self::MIN_HEIGHT, $height);
+            $file->error = $this->formatErrorMessage(self::MIN_HEIGHT, $this->config[self::MIN_HEIGHT]);
             $valid = false;
         }
 
         if (isset($this->config[self::MAX_HEIGHT]) && $this->config[self::MAX_HEIGHT] < $height) {
-            $file->error = $this->formatErrorMessage(self::MAX_HEIGHT, $height);
+            $file->error = $this->formatErrorMessage(self::MAX_HEIGHT, $this->config[self::MAX_HEIGHT]);
             $valid = false;
         }
 
