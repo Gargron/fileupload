@@ -583,7 +583,7 @@ class FileUpload
             'x-content-type-options' => 'nosniff'
         );
 
-        if ($content_range && is_object($files[0]) && $files[0]->size) {
+        if ($content_range && is_object($files[0]) && isset($files[0]->size) && $files[0]->size) {
             $headers['range'] = '0-' . ($this->fixIntegerOverflow($files[0]->size) - 1);
         }
 
