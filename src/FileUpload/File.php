@@ -36,7 +36,9 @@ class File extends \SplFileInfo
 
     protected function setMimeType($fileName)
     {
-        $this->mimeType = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $fileName);
+        if (file_exists($fileName)) {
+            $this->mimeType = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $fileName);
+        }
     }
 
     public function getMimeType()
