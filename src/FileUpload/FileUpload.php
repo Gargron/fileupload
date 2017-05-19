@@ -259,7 +259,10 @@ class FileUpload
                 );
             } else {
                 if ($upload && $upload['error'] != 0) {
-                    $file = $this->getFileContainer();
+                    // $this->fileContainer is empty at this point
+                    // $upload['tmp_name'] is also empty
+                    // So we create a File instance from $upload['name']
+                    $file = new File($upload['name']);
                     $file->error = $this->getMessage($upload['error']);
                     $file->errorCode = $upload['error'];
                     $this->files[] = $file;
@@ -580,7 +583,7 @@ class FileUpload
             'x-content-type-options' => 'nosniff'
         );
 
-        if ($content_range && is_object($files[0]) && $files[0]->size) {
+        if ($content_range && is_object($files[0]) && isset($files[0]->size) && $files[0]->size) {
             $headers['range'] = '0-' . ($this->fixIntegerOverflow($files[0]->size) - 1);
         }
 
