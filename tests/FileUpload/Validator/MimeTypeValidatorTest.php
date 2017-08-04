@@ -1,6 +1,6 @@
 <?php
 
-namespace FileUpload\Validator;
+namespace FileUpload\Tests\Validator;
 
 use FileUpload\FileUpload;
 use FileUpload\File;
@@ -31,7 +31,7 @@ class MimeTypeValidatorTest extends TestCase
             "error" => 0
         ];
 
-        $file = new File($_FILES['file']['tmp_name']);
+        $file = new File($_FILES['file']['tmp_name'], $_FILES['file']['name']);
         $upload = new FileUpload($_FILES["file"], $_SERVER);
 
         $this->assertTrue($this->validator->validate($upload, $file, $_FILES['file']['size']));
@@ -48,7 +48,7 @@ class MimeTypeValidatorTest extends TestCase
             "error" => 0
         );
 
-        $file = new File($_FILES['file']['tmp_name']);
+        $file = new File($_FILES['file']['tmp_name'], $_FILES['file']['name']);
         $upload = new FileUpload($_FILES["file"], $_SERVER);
 
         $this->assertFalse($this->validator->validate($upload, $file, $_FILES['file']['size']));
