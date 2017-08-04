@@ -1,117 +1,107 @@
 <?php
 
-namespace FileUpload\Validator;
+namespace FileUpload\Tests\Validator;
 
-
+use FileUpload\FileUpload;
 use FileUpload\File;
+use PHPUnit\Framework\TestCase;
+use FileUpload\Validator\SizeValidator;
 
-class SizeValidatorTest extends \PHPUnit_Framework_TestCase
+class SizeValidatorTest extends TestCase
 {
-	protected $directory;
-	protected $validator;
-	protected $file;
+
+    /**
+     * @var FileUpload
+     */
+    protected $upload;
 
     protected function setUp()
     {
-        $this->directory = __DIR__ . '/../../fixtures/';
+        $testFixturesDIrectory = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . "fixtures". DIRECTORY_SEPARATOR;
 
-        $_FILES['file'] = array(
+        $_FILES['file'] = [
             "name" => "real-image.jpg",
-            "tmp_name" => $this->directory . 'real-image.jpg',
+            "tmp_name" => $testFixturesDIrectory . 'real-image.jpg',
             "size" => 12,
             "error" => 0
-        );
+    ];
+
+        $this->upload = new FileUpload($_FILES['file'], $_SERVER);
+    }
+
+    public function testNumericMaxSize()
+    {
+        $validator = new SizeValidator(pow(1024, 3));
+
+        $file = new File($_FILES['file']['tmp_name'], $_FILES['file']['name']);
+        $this->assertTrue($validator->validate($this->upload, $file, $_FILES['file']['size']));
+    }
+
+    public function testBetweenMinAndMaxSize()
+    {
+        $validator = new SizeValidator("40K", "10K");
+
+        $file = new File($_FILES['file']['tmp_name'], $_FILES['file']['name']);
+        $this->assertTrue($validator->validate($this->upload, $file, $_FILES['file']['size']));
     }
 
 
-    public function testNumericMaxSize()
-	{
-		$this->validator = new SizeValidator(pow(1024, 3));
+    public function testFileSizeTooLarge()
+    {
+        $validator = new SizeValidator("20K", 10);
 
-        $file = new File($_FILES['file']['tmp_name']);
+        $file = new File($_FILES['file']['tmp_name'], $_FILES['file']['name']);
+        $this->assertFalse($validator->validate($this->upload, $file, $_FILES['file']['size']));
+    }
 
-        $this->assertTrue($this->validator->validate($file, $_FILES['file']['size']));
-	}
+    public function testFileSizeTooSmall()
+    {
+        $validator = new SizeValidator("1M", "50K");
 
-	public function testBetweenMinAndMaxSize()
-	{
+        $file = new File($_FILES['file']['tmp_name'], $_FILES['file']['name']);
 
-		$this->validator = new SizeValidator("40K", "10K");
+        $this->assertFalse($validator->validate($this->upload, $file, $_FILES['file']['size']));
+    }
 
-        $file = new File($_FILES['file']['tmp_name']);
+    /**
+     * @dataProvider getInvalidSizeFixtures
+     * @expectedException \FileUpload\UtilException
+     */
+    public function testInvalidMaximumFileSizeUnit(string $humanReadableSize)
+    {
+        $validator = new SizeValidator($humanReadableSize, 3);
+    }
 
-        $this->assertTrue($this->validator->validate($file, $_FILES['file']['size']));
-	}
+    /**
+     * @dataProvider getInvalidSizeFixtures
+     * @expectedException \FileUpload\UtilException
+     */
+    public function testInvalidMinimumFileSizeUnit(string $humanReadableSize)
+    {
+        $validator = new SizeValidator("40K", $humanReadableSize);
+    }
 
+    public function getInvalidSizeFixtures()
+    {
+        return [
+            ["40A"],
+            ["20Z"]
+        ];
+    }
 
-	public function testFileSizeTooLarge()
-	{
-		$this->validator = new SizeValidator("20K", 10);
+    /**
+     * @expectedException \FileUpload\Validator\SizeValidatorException
+     */
+    public function testMaximumFileSizeMustBeGreaterThanZero()
+    {
+        $validator = new SizeValidator(-1, "40K");
+    }
 
-        $file = new File($_FILES['file']['tmp_name']);
-
-        $this->assertFalse($this->validator->validate($file, $_FILES['file']['size']));
-	}
-
-	public function testFileSizeTooSmall()
-	{
-		$this->validator = new SizeValidator("1M", "50k");
-
-        $file = new File($_FILES['file']['tmp_name']);
-
-        $this->assertFalse($this->validator->validate($file, $_FILES['file']['size']));
-	}
-
-	public function testSetMaximumErrorMessages()
-	{
-		$this->validator = new SizeValidator("29K", "10K");
-
-        $file = new File($_FILES['file']['tmp_name']);
-
-		$fileTooLarge = "Too Large";
-
-		$this->validator->setErrorMessages(array(
-			0 => $fileTooLarge
-		));
-
-		$this->assertFalse($this->validator->validate($file, $_FILES['file']['size']));
-
-		$this->assertEquals($fileTooLarge, $file->error);
-	}
-
-	public function testSetMinimumErrorMessages()
-	{
-		$this->validator = new SizeValidator("40K", "35K");
-
-        $file = new File($_FILES['file']['tmp_name']);
-
-		$fileTooSmall = "Too Small";
-
-		$this->validator->setErrorMessages(array(
-			1 => $fileTooSmall
-		));
-
-		$this->assertFalse($this->validator->validate($file, $_FILES['file']['size']));
-
-		$this->assertEquals($fileTooSmall, $file->error);
-	}
-
-	/**
-	 * @expectedException \Exception
-	 * @expectedExceptionMessage Invalid File Max_Size
-	 */
-	public function testInvalidMaximumFileSize()
-	{
-		$this->validator = new SizeValidator("40A", 3);
-	}
-
-	/**
-	 * @expectedException \Exception
-	 * @expectedExceptionMessage Invalid File Min_Size
-	 */
-	public function testInvalidMinimumFilesSize()
-	{
-		$this->validator = new SizeValidator("40K", "-3");
-	}
-
+    /**
+     * @expectedException \FileUpload\Validator\SizeValidatorException
+     */
+    public function testMinimumFileSizeMustBeGreaterThanZero()
+    {
+        $validator = new SizeValidator("40K", -1);
+    }
 }
