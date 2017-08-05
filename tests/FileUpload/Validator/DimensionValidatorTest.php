@@ -1,306 +1,213 @@
 <?php
 
-namespace FileUpload\Validator;
-
+namespace FileUpload\Tests\Validator;
 
 use FileUpload\File;
+use FileUpload\FileUpload;
+use FileUpload\Validator\DimensionValidator;
+use PHPUnit\Framework\TestCase;
 
-class DimensionValidatorTest extends \PHPUnit_Framework_TestCase
+class DimensionValidatorTest extends TestCase
 {
-
     protected $directory;
+
+    protected $file;
+
+    protected function setUp()
+    {
+        $this->directory = dirname(__DIR__, 2). DIRECTORY_SEPARATOR. "fixtures".DIRECTORY_SEPARATOR;
+
+        $_FILES['file'] = [
+             "name" => "real-image.jpg",
+            "tmp_name" => $this->directory . 'real-image.jpg',
+            "size" => 12,
+            "error" => 0
+        ];
+
+        $this->file = new File($_FILES['file']['tmp_name'], $_FILES['file']['name']);
+    }
 
     public function testOnlyAnImageCanBeValidated()
     {
-        $_FILES['file'] = array(
-            "name" => "fake-image.jpg",
-            "tmp_name" => $this->directory . 'fake-image.jpg',
-            "size" => 12,
-            "error" => 0
-        );
-
-        $file = new File($_FILES['file']['tmp_name']);
-
-        $config = array(
+        $config = [
             'width' => 100,
             'height' => 200
-        );
+        ];
+
+        $upload = new FileUpload($_FILES['file'], $_SERVER);
 
         $this->assertFalse(
             $this->createValidator($config)
-                ->validate($file, $_FILES['file']['size'])
+                ->validate($upload, $this->file, $_FILES['file']['size'])
         );
 
-        $this->assertEquals(
-            'Cannot validate the currently uploaded file by it\'s dimension as it is not an image',
-            $file->error
-        );
+        $this->assertEquals(1, count($upload->getErrors()));
     }
 
-    protected function createValidator(array $config)
+    protected function createValidator(array $config): DimensionValidator
     {
         return new DimensionValidator($config);
     }
 
     public function testValidatorWorksWithTheWidthConfig()
     {
-        $_FILES['file'] = array(
-            "name" => "real-image.jpg",
-            "tmp_name" => $this->directory . 'real-image.jpg',
-            "size" => 12,
-            "error" => 0
-        );
+        $config = ['width' => 300];
 
-        $file = new File($_FILES['file']['tmp_name']);
-
-        $config = array(
-            'width' => 300
-        );
+        $upload = new FileUpload($_FILES['file'], $_SERVER);
 
         $this->assertTrue(
             $this->createValidator($config)
-                ->validate($file, $_FILES['file']['size'])
-        );
+                ->validate($upload, $this->file, $_FILES['file']['size'])
+	);
+	$this->assertEquals(0, count($upload->getErrors()));
 
-        $config = array(
-            'width' => 302
-        );
+        $config = ['width' => 301];
 
         $this->assertFalse(
             $this->createValidator($config)
-                ->validate($file, $_FILES['file']['size'])
-        );
+                ->validate($upload, $this->file, $_FILES['file']['size'])
+	);
+
+	$this->assertEquals(1, count($upload->getErrors()));
     }
 
     public function testValidatorWorksWithTheMinimumWidthConfig()
     {
-        $_FILES['file'] = array(
-            "name" => "real-image.jpg",
-            "tmp_name" => $this->directory . 'real-image.jpg',
-            "size" => 12,
-            "error" => 0
-        );
+        $config = ['min_width' => 200];
 
-        $file = new File($_FILES['file']['tmp_name']);
-
-        $config = array(
-            'min_width' => 200
-        );
+        $upload = new FileUpload($_FILES['file'], $_SERVER);
 
         $this->assertTrue(
             $this->createValidator($config)
-                ->validate($file, $_FILES['file']['size'])
+                ->validate($upload, $this->file, $_FILES['file']['size'])
         );
+	$this->assertEquals(0, count($upload->getErrors()));
 
-        $config = array(
-            'min_width' => 301
-        );
+        $config = [ 'min_width' => 301];
 
         $this->assertFalse(
             $this->createValidator($config)
-                ->validate($file, $_FILES['file']['size'])
+                ->validate($upload, $this->file, $_FILES['file']['size'])
         );
+
+	$this->assertEquals(1, count($upload->getErrors()));
     }
 
     public function testValidatorWorksWithTheMaximumWidthConfig()
     {
-        $_FILES['file'] = array(
-            "name" => "real-image.jpg",
-            "tmp_name" => $this->directory . 'real-image.jpg',
-            "size" => 12,
-            "error" => 0
-        );
+        $config = [ 'max_width' => 400];
 
-        $file = new File($_FILES['file']['tmp_name']);
-
-        $config = array(
-            'max_width' => 400
-        );
+        $upload = new FileUpload($_FILES['file'], $_SERVER);
 
         $this->assertTrue(
             $this->createValidator($config)
-                ->validate($file, $_FILES['file']['size'])
+                ->validate($upload, $this->file, $_FILES['file']['size'])
         );
+	$this->assertEquals(0, count($upload->getErrors()));
 
-        $config = array(
-            'max_width' => 250
-        );
+        $config = [ 'max_width' => 250];
 
         $this->assertFalse(
             $this->createValidator($config)
-                ->validate($file, $_FILES['file']['size'])
+                ->validate($upload, $this->file, $_FILES['file']['size'])
         );
+	$this->assertEquals(1, count($upload->getErrors()));
     }
 
     public function testValidatorWorksExpectedlyWithTheWidthAndHeightValues()
     {
-        $_FILES['file'] = array(
-            "name" => "real-image.jpg",
-            "tmp_name" => $this->directory . 'real-image.jpg',
-            "size" => 12,
-            "error" => 0
-        );
-
-        $file = new File($_FILES['file']['tmp_name']);
-
-        $config = array(
+        $config = [
             'width' => 300,
             'height' => 300
-        );
+        ];
+
+        $upload = new FileUpload($_FILES['file'], $_SERVER);
 
         $this->assertTrue(
             $this->createValidator($config)
-                ->validate($file, $_FILES['file']['size'])
+                ->validate($upload, $this->file, $_FILES['file']['size'])
         );
+	$this->assertEquals(0, count($upload->getErrors()));
     }
 
     public function testValidatorWorksWithTheHeightConfig()
     {
-        $_FILES['file'] = array(
-            "name" => "real-image.jpg",
-            "tmp_name" => $this->directory . 'real-image.jpg',
-            "size" => 12,
-            "error" => 0
-        );
-
-        $file = new File($_FILES['file']['tmp_name']);
-
-        $config = array(
-            'height' => 300
-        );
+        $upload = new FileUpload($_FILES['file'], $_SERVER);
+        $config = [ 'height' => 300];
 
         $this->assertTrue(
             $this->createValidator($config)
-                ->validate($file, $_FILES['file']['size'])
+                ->validate($upload, $this->file, $_FILES['file']['size'])
         );
+	$this->assertEquals(0, count($upload->getErrors()));
 
-        $config = array(
-            'height' => 305
-        );
+        $config = [ 'height' => 305];
 
         $this->assertFalse(
             $this->createValidator($config)
-                ->validate($file, $_FILES['file']['size'])
+                ->validate($upload, $this->file, $_FILES['file']['size'])
         );
+	$this->assertEquals(1, count($upload->getErrors()));
     }
 
     public function testValidatorWorksWithTheMinimumHeightConfig()
     {
-        $_FILES['file'] = array(
-            "name" => "real-image.jpg",
-            "tmp_name" => $this->directory . 'real-image.jpg',
-            "size" => 12,
-            "error" => 0
-        );
+        $upload = new FileUpload($_FILES['file'], $_SERVER);
 
-        $file = new File($_FILES['file']['tmp_name']);
-
-        $config = array(
-            'min_height' => 200
-        );
+        $config = [ 'min_height' => 200];
 
         $this->assertTrue(
             $this->createValidator($config)
-                ->validate($file, $_FILES['file']['size'])
+                ->validate($upload, $this->file, $_FILES['file']['size'])
         );
+	$this->assertEquals(0, count($upload->getErrors()));
 
-        $config = array(
-            'min_height' => 301
-        );
+        $config = [ 'min_height' => 301];
 
         $this->assertFalse(
             $this->createValidator($config)
-                ->validate($file, $_FILES['file']['size'])
+                ->validate($upload, $this->file, $_FILES['file']['size'])
         );
+	$this->assertEquals(1, count($upload->getErrors()));
     }
 
     public function testValidatorWorksWithTheMaximumHeightConfig()
     {
-        $_FILES['file'] = array(
-            "name" => "real-image.jpg",
-            "tmp_name" => $this->directory . 'real-image.jpg',
-            "size" => 12,
-            "error" => 0
-        );
+        $config =['max_height' => 400];
 
-        $file = new File($_FILES['file']['tmp_name']);
-
-        $config = array(
-            'max_height' => 400
-        );
+        $upload = new FileUpload($_FILES['file'], $_SERVER);
 
         $this->assertTrue(
             $this->createValidator($config)
-                ->validate($file, $_FILES['file']['size'])
+                ->validate($upload, $this->file, $_FILES['file']['size'])
         );
 
-        $config = array(
-            'max_height' => 209
-        );
+	$this->assertEquals(0, count($upload->getErrors()));
+
+	$config = [ 'max_height' => 209];
 
         $this->assertFalse(
             $this->createValidator($config)
-                ->validate($file, $_FILES['file']['size'])
+                ->validate($upload, $this->file, $_FILES['file']['size'])
         );
+	$this->assertEquals(1, count($upload->getErrors()));
     }
 
     public function testValidatorWorksAsExpectedWithAllConfigOption()
     {
-        $_FILES['file'] = array(
-            "name" => "real-image.jpg",
-            "tmp_name" => $this->directory . 'real-image.jpg',
-            "size" => 12,
-            "error" => 0
-        );
-
-        $file = new File($_FILES['file']['tmp_name']);
-
-        $config = array(
+        $config = [
             'width' => 300,
             'height' => 300,
             'max_width' => 310,
             'max_height' => 350
-        );
+        ];
+
+        $upload = new FileUpload($_FILES['file'], $_SERVER);
 
         $this->assertTrue(
             $this->createValidator($config)
-                ->validate($file, $_FILES['file']['size'])
+                ->validate($upload, $this->file, $_FILES['file']['size'])
         );
-    }
-
-    public function testSetErrorMessages()
-    {
-
-        $_FILES['file'] = array(
-            "name" => "real-image.jpg",
-            "tmp_name" => $this->directory . 'real-image.jpg',
-            "size" => 12,
-            "error" => 0
-        );
-
-        $file = new File($_FILES['file']['tmp_name']);
-
-        $config = array(
-            'width' => 301,
-            'height' => 301
-        );
-
-        $validator = $this->createValidator($config);
-
-        $validator->setErrorMessages(array(
-            DimensionValidator::HEIGHT => "Height too large"
-        ));
-
-        $validator->validate($file, $_FILES['file']['size']);
-
-        $this->assertEquals(
-            'Height too large',
-            $file->error
-        );
-    }
-
-    protected function setUp()
-    {
-        $this->directory = __DIR__ . '/../../fixtures/';
+	$this->assertEquals(0, count($upload->getErrors()));
     }
 }
