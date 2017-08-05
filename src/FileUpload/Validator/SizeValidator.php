@@ -2,116 +2,57 @@
 
 namespace FileUpload\Validator;
 
+use FileUpload\Util\Size;
 use FileUpload\File;
-use FileUpload\Util;
+use FileUpload\FileUpload;
 
-class SizeValidator implements Validator
+class SizeValidator implements ValidatorInterface
 {
+    protected $maxFileSize;
 
-    const FILE_SIZE_IS_TOO_LARGE = 0;
-    const FILE_SIZE_IS_TOO_SMALL = 1;
+    protected $minFileSize;
 
-    /**
-     * @var int The maximum file size of the uploaded file
-     */
-    protected $maxSize;
-
-    /**
-     * @var int The minimum file size of the uploaded file
-     */
-    protected $minSize;
-
-    /**
-     * @var bool Determines the upload status of the file
-     */
-    protected $isValid;
-
-    protected $errorMessages = array(
-        self::FILE_SIZE_IS_TOO_LARGE => "The uploaded file is too large",
-        self::FILE_SIZE_IS_TOO_SMALL => "The uploaded file is too small"
-    );
-
-    /**
-     * @param int $maxSize
-     * @param int $minSize Defaults to 0
-     */
     public function __construct($maxSize, $minSize = 0)
     {
-        $this->maxSize = $this->setMaxSize($maxSize);
-        $this->minSize = $this->setMinFile($minSize);
-        $this->isValid = true;
+        $this->minFileSize = $this->bytes($minSize);
+        $this->maxFileSize = $this->bytes($maxSize);
+
+	$this->validateSizes();
     }
 
-    /**
-     * @param $maxSize
-     * @return int|string
-     * @throws \Exception if the max file size is null or equals zero
-     */
-    public function setMaxSize($maxSize)
+    private function validateSizes()
     {
-        $max = 0;
-
-        if (is_numeric($maxSize)) {
-            $max = $maxSize;
-        } else {
-            $max = Util::humanReadableToBytes($maxSize);
+        if ($this->maxFileSize <= 0) {
+            throw new SizeValidatorException("Invalid max size. Max size can be equal or be less than zero (0)");
         }
 
-        if ($max < 0 || $max === null) {
-            throw new \Exception("Invalid File Max_Size");
-        }
-
-        return $max;
-    }
-
-
-    /**
-     * @param $minSize
-     * @return int|string
-     * @throws \Exception if the file size is lesser than zero or null
-     */
-    public function setMinFile($minSize)
-    {
-        $min = 0;
-
-        if (is_numeric($minSize)) {
-            $min = $minSize;
-        } else {
-            $min = Util::humanReadableToBytes($minSize);
-        }
-
-        if ($min < 0 || $min === null) {
-            throw new \Exception("Invalid File Min_Size");
-        }
-
-        return $min;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setErrorMessages(array $messages)
-    {
-        foreach ($messages as $key => $value) {
-            $this->errorMessages[$key] = $value;
+        if ($this->minFileSize < 0) {
+            throw new SizeValidatorException("Invalid min size. Min size can be lesser than zero (0)");
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function validate(File $file, $currentSize = null)
+    protected function bytes($size)
     {
-        if ($file->getSize() < $this->minSize) {
-            $file->error = $this->errorMessages[self::FILE_SIZE_IS_TOO_SMALL];
-            $this->isValid = false;
+        // We would assume it is already in a valid format. Something like "1024"
+        if (is_numeric($size)) {
+            return $size;
         }
 
-        if ($file->getSize() > $this->maxSize || $currentSize > $this->maxSize) {
-            $file->error = $this->errorMessages[self::FILE_SIZE_IS_TOO_LARGE];
-            $this->isValid = false;
+	return Size::fromHumanReadable($size);
+    }
+
+    public function validate(FileUpload $upload, File $file, $currentSize = -1): bool
+    {
+        if ($file->getSize() < $this->minFileSize) {
+            $upload->addError("The uploaded file is too small");
+            return false;
         }
 
-        return $this->isValid;
+        if ($file->getSize() > $this->maxFileSize || $currentSize > $this->maxFileSize) {
+            $upload->addError("The uploaded file is too large");
+            return false;
+        }
+
+        return true ;
     }
 }

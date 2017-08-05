@@ -1,13 +1,44 @@
 {
-  "name": "gargron/fileupload",
-  "description": "File uploading library capable of handling large/chunked/multiple file uploads",
+  "name": "Gargron/fileupload",
   "license": "MIT",
-  "autoload": {
-    "psr-0": {
-      "FileUpload\\": "src/"
+  "description": "File upload and validation library....."  ,
+  "type": "library",
+  "authors": [
+    {
+      "name": "Lanre Adelowo",
+      "email": "me@lanreadelowo.com",
+      "role": "Maintainer",
+      "homepage": "https://lanreadelowo.com"
+    },
+    {
+      "name": "Eugen", 
+      "email": "eugen@zeonfederated.com",
+      "role": "Author",
+      "homepage": "https://zeonfederated.com"
     }
+  ],
+  "require": {
+    "php": "~7.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "3.7.*"
-  }
+    "phpunit/phpunit": "^6.0",
+    "scrutinizer/ocular": "~1.1",
+    "squizlabs/php_codesniffer": "~2.3",
+    "mockery/mockery": "^0.9.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "FileUpload\\": "src/FileUpload"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "FileUpload\\Tests\\": "tests"
+    }
+  },
+  "keywords": [
+    "php7",
+    "upload",
+    "file upload"
+  ]
 }
