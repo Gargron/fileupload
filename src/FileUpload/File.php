@@ -2,63 +2,62 @@
 
 namespace FileUpload;
 
-class File extends \SplFileInfo
+use SplFileInfo;
+use FileUpload\FileInterface;
+use FileUpload\Util\MimeType;
+
+class File extends SplFileInfo implements FileInterface
 {
-    /**
-     * Preset no errors
-     * @var mixed
-     */
-    public $error = 0;
+    protected $tmpName;
 
-    /**
-     * Preset no errors
-     * @var mixed
-     */
-    public $errorCode = 0;
+    protected $name;
 
-    /**
-     * Preset unknown mime type
-     * @var string
-     */
-    protected $mimeType = 'application/octet-stream';
+    protected $extension;
 
-    /**
-     * Is the file completely downloaded
-     * @var boolean
-     */
-    public $completed = false;
+    protected $mimetype;
 
-    public function __construct($fileName)
+    public function __construct(string $tmpName, string $clientUploadedFileName)
     {
-        $this->setMimeType($fileName);
-        parent::__construct($fileName);
+        $this->tmpName = $tmpName;
+        $this->name = pathinfo($clientUploadedFileName, PATHINFO_FILENAME);
+        $this->extension = pathinfo($clientUploadedFileName, PATHINFO_EXTENSION);
+
+        parent::__construct($tmpName);
     }
 
-    protected function setMimeType($fileName)
+    public function setError(string $message, int $code)
     {
-        if (file_exists($fileName)) {
-            $this->mimeType = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $fileName);
-        }
+        $this->error = $message;
+        $this->errorCode = $code;
     }
 
-    public function getMimeType()
+    public function getName(): string
     {
-        if ($this->getType() !== 'file') {
-            throw new \Exception('You cannot get the mimetype for a ' . $this->getType());
+        return $this->name;
+    }
+
+    public function getMimeType(): string
+    {
+        if (!$this->mimetype) {
+            $this->mimetype = MimeType::fromFile($this->tmpName);
         }
 
-        return $this->mimeType;
+        return $this->mimetype;
     }
 
-    /**
-     * Does this file have an image mime type?
-     * @return boolean
-     */
-    public function isImage()
+    public function getExtension(): string
     {
-        return in_array(
-            $this->mimeType,
-            array('image/gif', 'image/jpeg', 'image/pjpeg', 'image/png')
-        );
+        return $this->extension;
+    }
+
+    public function isUploadedFile(): bool
+    {
+        return is_uploaded_file($this->getPathName());
+    }
+
+    public function isImage(): bool
+    {
+        // TODO(adelowo) Are this the only valid images mimetypes ?
+        return in_array($this->getMimeType(), ['image/gif', 'image/jpeg', 'image/pjpeg', 'image/png'], true);
     }
 }

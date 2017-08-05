@@ -29,16 +29,25 @@ class DimensionValidatorTest extends TestCase
 
     public function testOnlyAnImageCanBeValidated()
     {
+        $_FILES['fake'] = [
+            "name" => "fake.jpg",
+            "tmp_name" => $this->directory . 'fake-image.jpg',
+            "size" => 12,
+            "error" => 0
+        ];
+
         $config = [
             'width' => 100,
             'height' => 200
         ];
 
-        $upload = new FileUpload($_FILES['file'], $_SERVER);
+	$this->file = new File($_FILES['fake']['tmp_name'], $_FILES['fake']['name']);
+
+        $upload = new FileUpload($_FILES['fake'], $_SERVER);
 
         $this->assertFalse(
             $this->createValidator($config)
-                ->validate($upload, $this->file, $_FILES['file']['size'])
+                ->validate($upload, $this->file, $_FILES['fake']['size'])
         );
 
         $this->assertEquals(1, count($upload->getErrors()));
@@ -58,17 +67,17 @@ class DimensionValidatorTest extends TestCase
         $this->assertTrue(
             $this->createValidator($config)
                 ->validate($upload, $this->file, $_FILES['file']['size'])
-	);
-	$this->assertEquals(0, count($upload->getErrors()));
+    );
+        $this->assertEquals(0, count($upload->getErrors()));
 
         $config = ['width' => 301];
 
         $this->assertFalse(
             $this->createValidator($config)
                 ->validate($upload, $this->file, $_FILES['file']['size'])
-	);
+    );
 
-	$this->assertEquals(1, count($upload->getErrors()));
+        $this->assertEquals(1, count($upload->getErrors()));
     }
 
     public function testValidatorWorksWithTheMinimumWidthConfig()
@@ -81,7 +90,7 @@ class DimensionValidatorTest extends TestCase
             $this->createValidator($config)
                 ->validate($upload, $this->file, $_FILES['file']['size'])
         );
-	$this->assertEquals(0, count($upload->getErrors()));
+        $this->assertEquals(0, count($upload->getErrors()));
 
         $config = [ 'min_width' => 301];
 
@@ -90,7 +99,7 @@ class DimensionValidatorTest extends TestCase
                 ->validate($upload, $this->file, $_FILES['file']['size'])
         );
 
-	$this->assertEquals(1, count($upload->getErrors()));
+        $this->assertEquals(1, count($upload->getErrors()));
     }
 
     public function testValidatorWorksWithTheMaximumWidthConfig()
@@ -103,7 +112,7 @@ class DimensionValidatorTest extends TestCase
             $this->createValidator($config)
                 ->validate($upload, $this->file, $_FILES['file']['size'])
         );
-	$this->assertEquals(0, count($upload->getErrors()));
+        $this->assertEquals(0, count($upload->getErrors()));
 
         $config = [ 'max_width' => 250];
 
@@ -111,7 +120,7 @@ class DimensionValidatorTest extends TestCase
             $this->createValidator($config)
                 ->validate($upload, $this->file, $_FILES['file']['size'])
         );
-	$this->assertEquals(1, count($upload->getErrors()));
+        $this->assertEquals(1, count($upload->getErrors()));
     }
 
     public function testValidatorWorksExpectedlyWithTheWidthAndHeightValues()
@@ -127,7 +136,7 @@ class DimensionValidatorTest extends TestCase
             $this->createValidator($config)
                 ->validate($upload, $this->file, $_FILES['file']['size'])
         );
-	$this->assertEquals(0, count($upload->getErrors()));
+        $this->assertEquals(0, count($upload->getErrors()));
     }
 
     public function testValidatorWorksWithTheHeightConfig()
@@ -139,7 +148,7 @@ class DimensionValidatorTest extends TestCase
             $this->createValidator($config)
                 ->validate($upload, $this->file, $_FILES['file']['size'])
         );
-	$this->assertEquals(0, count($upload->getErrors()));
+        $this->assertEquals(0, count($upload->getErrors()));
 
         $config = [ 'height' => 305];
 
@@ -147,7 +156,7 @@ class DimensionValidatorTest extends TestCase
             $this->createValidator($config)
                 ->validate($upload, $this->file, $_FILES['file']['size'])
         );
-	$this->assertEquals(1, count($upload->getErrors()));
+        $this->assertEquals(1, count($upload->getErrors()));
     }
 
     public function testValidatorWorksWithTheMinimumHeightConfig()
@@ -160,7 +169,7 @@ class DimensionValidatorTest extends TestCase
             $this->createValidator($config)
                 ->validate($upload, $this->file, $_FILES['file']['size'])
         );
-	$this->assertEquals(0, count($upload->getErrors()));
+        $this->assertEquals(0, count($upload->getErrors()));
 
         $config = [ 'min_height' => 301];
 
@@ -168,7 +177,7 @@ class DimensionValidatorTest extends TestCase
             $this->createValidator($config)
                 ->validate($upload, $this->file, $_FILES['file']['size'])
         );
-	$this->assertEquals(1, count($upload->getErrors()));
+        $this->assertEquals(1, count($upload->getErrors()));
     }
 
     public function testValidatorWorksWithTheMaximumHeightConfig()
@@ -182,15 +191,15 @@ class DimensionValidatorTest extends TestCase
                 ->validate($upload, $this->file, $_FILES['file']['size'])
         );
 
-	$this->assertEquals(0, count($upload->getErrors()));
+        $this->assertEquals(0, count($upload->getErrors()));
 
-	$config = [ 'max_height' => 209];
+        $config = [ 'max_height' => 209];
 
         $this->assertFalse(
             $this->createValidator($config)
                 ->validate($upload, $this->file, $_FILES['file']['size'])
         );
-	$this->assertEquals(1, count($upload->getErrors()));
+        $this->assertEquals(1, count($upload->getErrors()));
     }
 
     public function testValidatorWorksAsExpectedWithAllConfigOption()
@@ -208,6 +217,6 @@ class DimensionValidatorTest extends TestCase
             $this->createValidator($config)
                 ->validate($upload, $this->file, $_FILES['file']['size'])
         );
-	$this->assertEquals(0, count($upload->getErrors()));
+        $this->assertEquals(0, count($upload->getErrors()));
     }
 }

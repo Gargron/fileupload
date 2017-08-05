@@ -2,6 +2,7 @@
 
 namespace FileUpload;
 
+use FileUpload\FileInterface;
 use FileUpload\FileNameGenerator\FileNameGenerator;
 use FileUpload\FileNameGenerator\Simple;
 use FileUpload\FileSystem\FileSystem;
@@ -12,63 +13,16 @@ use Psr\Log\LoggerInterface;
 class FileUpload
 {
     /**
-     * Our own error constants
-     */
-    const UPLOAD_ERR_PHP_SIZE = 20;
-    /**
-     * $_FILES
      * @var array
      */
-    protected $upload;
-    /**
-     * The array of uploaded files
-     * @var array
-     */
-    protected $files;
-    /**
-     * $_SERVER
-     * @var array
-     */
+    protected $errors;
+
     protected $server;
-    /**
-     * Path resolver instance
-     * @var PathResolver
-     */
-    protected $pathresolver;
-    /**
-     * Path resolver instance
-     * @var FileNameGenerator
-     */
-    protected $fileNameGenerator;
-    /**
-     * File system instance
-     * @var FileSystem
-     */
-    protected $filesystem;
-    /**
-     * Optional logger
-     * @var LoggerInterface
-     */
-    protected $logger;
-    /**
-     * File Container instance
-     * @var File
-     */
-    protected $fileContainer;
-    /**
-     * Validators to be run
-     * @var array
-     */
-    protected $validators = array();
-    /**
-     * Callbacks to be run
-     * @var array
-     */
-    protected $callbacks = array();
-    /**
-     * Default messages
-     * @var array
-     */
+
+    protected $validators;
+
+    protected $callbacks;
+
     protected $messages = array(
         // PHP $_FILES-own
         UPLOAD_ERR_INI_SIZE => 'The uploaded file exceeds the upload_max_filesize directive in php.ini',
@@ -78,24 +32,26 @@ class FileUpload
         UPLOAD_ERR_NO_TMP_DIR => 'Missing a temporary folder',
         UPLOAD_ERR_CANT_WRITE => 'Failed to write file to disk',
         UPLOAD_ERR_EXTENSION => 'A PHP extension stopped the file upload',
-
-        // Our own
-        self::UPLOAD_ERR_PHP_SIZE => 'The upload file exceeds the post_max_size or the upload_max_filesize directives in php.ini',
     );
 
-    /**
-     * Construct this mother
-     * @param array             $upload
-     * @param array             $server
-     * @param FileNameGenerator $generator
-     */
-    public function __construct($upload, $server, FileNameGenerator $generator = null)
+    public function __construct($upload, $server)
     {
+        $this->errors = [];
         $this->upload = isset($upload) ? $upload : null;
         $this->server = $server;
-        $this->fileNameGenerator = $generator ?: new Simple();
         $this->prepareMessages();
     }
+
+    public function addError(string $message)
+    {
+        $this->errors[] = $message;
+    }
+
+    public function getErrors(): array
+    {
+        return $this->errors;
+    }
+
 
     /**
      * Converts $messages array into a hash with strings as keys
@@ -221,12 +177,15 @@ class FileUpload
         $upload = $this->upload;
 
         if ($this->logger) {
-            $this->logger->debug('Processing uploads', array(
+            $this->logger->debug(
+                'Processing uploads',
+                array(
                 'Content-range' => $content_range,
                 'Size' => $size,
                 'Upload array' => $upload,
                 'Server array' => $this->server,
-            ));
+                )
+            );
         }
 
         if ($upload && is_array($upload['tmp_name'])) {
@@ -337,13 +296,16 @@ class FileUpload
                 $file_size = $this->getFilesize($file_path, $append_file);
 
                 if ($this->logger) {
-                    $this->logger->debug('Processing ' . $file->name, array(
+                    $this->logger->debug(
+                        'Processing ' . $file->name,
+                        array(
                         'File path' => $file_path,
                         'File object' => $file,
                         'Append to file?' => $append_file,
                         'File exists?' => $this->filesystem->isFile($file_path),
                         'File size' => $file_size,
-                    ));
+                        )
+                    );
                 }
 
                 if ($file->size == $file_size) {
@@ -525,12 +487,14 @@ class FileUpload
         $last = strtolower($val[strlen($val) - 1]);
 
         switch ($last) {
-            case 'g':
-                $bytes *= 1024;
-            case 'm':
-                $bytes *= 1024;
-            case 'k':
-                $bytes *= 1024;
+        case 'g':
+            $bytes *= 1024;
+            // no break
+        case 'm':
+            $bytes *= 1024;
+            // no break
+        case 'k':
+            $bytes *= 1024;
         }
 
         return $this->fixIntegerOverflow($bytes);

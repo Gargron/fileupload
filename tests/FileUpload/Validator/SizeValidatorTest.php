@@ -81,6 +81,24 @@ class SizeValidatorTest extends TestCase
         $validator = new SizeValidator("40K", $humanReadableSize);
     }
 
+    /**
+     * @expectedException \FileUpload\Validator\SizeValidatorException
+     */
+    public function testInvalidMinimumFileSize()
+    {
+        $validator = new SizeValidator("40KB", -1);
+    }
+
+    /**
+     * @expectedException \FileUpload\Validator\SizeValidatorException
+     */
+    public function testInvalidMaximumFileSize()
+    {
+        $validator = new SizeValidator(-1, "20KB");
+    }
+
+
+
     public function getInvalidSizeFixtures()
     {
         return [
