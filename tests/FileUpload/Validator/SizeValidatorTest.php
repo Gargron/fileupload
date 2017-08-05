@@ -39,7 +39,7 @@ class SizeValidatorTest extends TestCase
 
     public function testBetweenMinAndMaxSize()
     {
-        $validator = new SizeValidator("40K", "10K");
+        $validator = new SizeValidator("40KB", "10KB");
 
         $file = new File($_FILES['file']['tmp_name'], $_FILES['file']['name']);
         $this->assertTrue($validator->validate($this->upload, $file, $_FILES['file']['size']));
@@ -48,7 +48,7 @@ class SizeValidatorTest extends TestCase
 
     public function testFileSizeTooLarge()
     {
-        $validator = new SizeValidator("20K", 10);
+        $validator = new SizeValidator("20KB", 10);
 
         $file = new File($_FILES['file']['tmp_name'], $_FILES['file']['name']);
         $this->assertFalse($validator->validate($this->upload, $file, $_FILES['file']['size']));
@@ -56,7 +56,7 @@ class SizeValidatorTest extends TestCase
 
     public function testFileSizeTooSmall()
     {
-        $validator = new SizeValidator("1M", "50K");
+        $validator = new SizeValidator("1MB", "50KB");
 
         $file = new File($_FILES['file']['tmp_name'], $_FILES['file']['name']);
 
@@ -65,7 +65,7 @@ class SizeValidatorTest extends TestCase
 
     /**
      * @dataProvider getInvalidSizeFixtures
-     * @expectedException \FileUpload\UtilException
+     * @expectedException \FileUpload\Util\HumanReadableToBytesException
      */
     public function testInvalidMaximumFileSizeUnit(string $humanReadableSize)
     {
@@ -74,7 +74,7 @@ class SizeValidatorTest extends TestCase
 
     /**
      * @dataProvider getInvalidSizeFixtures
-     * @expectedException \FileUpload\UtilException
+     * @expectedException \FileUpload\Util\HumanReadableToBytesException
      */
     public function testInvalidMinimumFileSizeUnit(string $humanReadableSize)
     {
@@ -90,7 +90,7 @@ class SizeValidatorTest extends TestCase
     }
 
     /**
-     * @expectedException \FileUpload\Validator\SizeValidatorException
+     * @expectedException \FileUpload\Util\HumanReadableToBytesException
      */
     public function testMaximumFileSizeMustBeGreaterThanZero()
     {
@@ -98,7 +98,7 @@ class SizeValidatorTest extends TestCase
     }
 
     /**
-     * @expectedException \FileUpload\Validator\SizeValidatorException
+     * @expectedException \FileUpload\Util\HumanReadableToBytesException
      */
     public function testMinimumFileSizeMustBeGreaterThanZero()
     {

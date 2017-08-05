@@ -2,9 +2,9 @@
 
 namespace FileUpload\Validator;
 
+use FileUpload\Util\Size;
 use FileUpload\File;
 use FileUpload\FileUpload;
-use FileUpload\Util;
 
 class SizeValidator implements ValidatorInterface
 {
@@ -38,7 +38,7 @@ class SizeValidator implements ValidatorInterface
             return $size;
         }
 
-        return Util::humanReadableToBytes($size);
+	return Size::fromHumanReadable($size);
     }
 
     public function validate(FileUpload $upload, File $file, $currentSize = -1): bool
