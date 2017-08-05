@@ -33,7 +33,7 @@ class SizeTest extends TestCase
     /**
      * @dataProvider getValidInputs
      */
-    public function testItSuccessfullyParsesAnHumanReadableString(string $input, int $expected)
+    public function testItSuccessfullyParsesAHumanReadableString(string $input, int $expected)
     {
         $this->assertEquals(Size::fromHumanReadable($input), $expected);
     }
