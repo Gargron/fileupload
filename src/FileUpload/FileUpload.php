@@ -350,8 +350,6 @@ class FileUpload
                     // Yay, upload is complete!
                     $completed = true;
                 } else {
-                    $file->size = $file_size;
-
                     if (!$content_range) {
                         // The file is incomplete and it's not a chunked upload, abort
                         $this->filesystem->unlink($file_path);
@@ -359,7 +357,7 @@ class FileUpload
                     }
                 }
 
-                $file = new $file($file_path);
+                $file = new File($file_path);
                 $file->completed = $completed;
                 $file->size = $file_size;
 
