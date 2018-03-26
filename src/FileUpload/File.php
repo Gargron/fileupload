@@ -23,14 +23,20 @@ class File extends \SplFileInfo
     protected $mimeType = 'application/octet-stream';
 
     /**
+     * @var string
+     */
+    protected $clientFileName;
+
+    /**
      * Is the file completely downloaded
      * @var boolean
      */
     public $completed = false;
 
-    public function __construct($fileName)
+    public function __construct($fileName, $clientFileName='')
     {
         $this->setMimeType($fileName);
+        $this->clientFileName = $clientFileName;
         parent::__construct($fileName);
     }
 
@@ -39,6 +45,15 @@ class File extends \SplFileInfo
         if (file_exists($fileName)) {
             $this->mimeType = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $fileName);
         }
+    }
+
+    /**
+     * Returns the "original" name of the file
+     * @return string
+     */
+    public function getClientFileName()
+    {
+        return $this->clientFileName;
     }
 
     public function getMimeType()
