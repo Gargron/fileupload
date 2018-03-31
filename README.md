@@ -22,6 +22,14 @@ This package is available via Composer:
 }
 ```
 
+### Requirements
+
+* Ensure that the PHP extension "php_fileinfo" is enabled;
+
+* Your php.ini must have the next directive:
+
+`file_uploads = On`
+
 ### Status
 
 The unit test suite covers simple uploads and the library "works on my machine", as it were. You are welcome to contribute.
