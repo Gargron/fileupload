@@ -3,10 +3,10 @@
 namespace FileUpload\Validator;
 
 use FileUpload\File;
+use PHPUnit\Framework\TestCase;
 
-class MimeTypeValidatorTest extends \PHPUnit_Framework_TestCase
+class MimeTypeValidatorTest extends TestCase
 {
-
     protected $directory;
 
     /**

@@ -2,12 +2,11 @@
 
 namespace FileUpload\Validator;
 
-
+use PHPUnit\Framework\TestCase;
 use FileUpload\File;
 
-class DimensionValidatorTest extends \PHPUnit_Framework_TestCase
+class DimensionValidatorTest extends TestCase
 {
-
     protected $directory;
 
     public function testOnlyAnImageCanBeValidated()
@@ -270,7 +269,6 @@ class DimensionValidatorTest extends \PHPUnit_Framework_TestCase
 
     public function testSetErrorMessages()
     {
-
         $_FILES['file'] = array(
             "name" => "real-image.jpg",
             "tmp_name" => $this->directory . 'real-image.jpg',

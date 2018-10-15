@@ -3,8 +3,9 @@
 namespace FileUpload\Validator;
 
 use FileUpload\File;
+use PHPUnit\Framework\TestCase;
 
-class SimpleTest extends \PHPUnit_Framework_TestCase
+class SimpleTest extends TestCase
 {
     public function testExceedSize()
     {
@@ -35,7 +36,6 @@ class SimpleTest extends \PHPUnit_Framework_TestCase
 
     public function testWrongMime()
     {
-
         $validator = new Simple("1M", array('image/png'));
 
         $file = new File($_FILES['file']['tmp_name']);
@@ -55,7 +55,6 @@ class SimpleTest extends \PHPUnit_Framework_TestCase
 
     public function testSetErrorMessages()
     {
-
         $file = new File($_FILES['file']['tmp_name']);
 
         $validator = new Simple(10, array('image/png'));
