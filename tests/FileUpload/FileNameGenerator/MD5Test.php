@@ -16,11 +16,11 @@ class MD5Test extends TestCase
         $playground_path = __DIR__ . '/../../playground';
         $fixtures_path = __DIR__ . '/../../fixtures';
 
-        if (!is_dir($playground_path)) {
+        if (! is_dir($playground_path)) {
             mkdir($playground_path);
         }
 
-        if (!is_dir($playground_path . '/uploaded')) {
+        if (! is_dir($playground_path . '/uploaded')) {
             mkdir($playground_path . '/uploaded');
         }
 

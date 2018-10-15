@@ -2,8 +2,8 @@
 
 namespace FileUpload\Validator;
 
-use PHPUnit\Framework\TestCase;
 use FileUpload\File;
+use PHPUnit\Framework\TestCase;
 
 class SizeValidatorTest extends TestCase
 {
@@ -15,12 +15,12 @@ class SizeValidatorTest extends TestCase
     {
         $this->directory = __DIR__ . '/../../fixtures/';
 
-        $_FILES['file'] = array(
+        $_FILES['file'] = [
             "name" => "real-image.jpg",
             "tmp_name" => $this->directory . 'real-image.jpg',
             "size" => 12,
             "error" => 0
-        );
+        ];
     }
 
     public function testNumericMaxSize()
@@ -68,9 +68,9 @@ class SizeValidatorTest extends TestCase
 
         $fileTooLarge = "Too Large";
 
-        $this->validator->setErrorMessages(array(
+        $this->validator->setErrorMessages([
             0 => $fileTooLarge
-        ));
+        ]);
 
         $this->assertFalse($this->validator->validate($file, $_FILES['file']['size']));
 
@@ -85,9 +85,9 @@ class SizeValidatorTest extends TestCase
 
         $fileTooSmall = "Too Small";
 
-        $this->validator->setErrorMessages(array(
+        $this->validator->setErrorMessages([
             1 => $fileTooSmall
-        ));
+        ]);
 
         $this->assertFalse($this->validator->validate($file, $_FILES['file']['size']));
 

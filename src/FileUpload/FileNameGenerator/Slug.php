@@ -9,8 +9,8 @@
 namespace FileUpload\FileNameGenerator;
 
 use FileUpload\FileSystem\FileSystem;
-use FileUpload\PathResolver\PathResolver;
 use FileUpload\FileUpload;
+use FileUpload\PathResolver\PathResolver;
 use FileUpload\Util;
 
 class Slug implements FileNameGenerator
@@ -40,10 +40,10 @@ class Slug implements FileNameGenerator
      */
     public function getFileName($source_name, $type, $tmp_name, $index, $content_range, FileUpload $upload)
     {
-        $this->filesystem   = $upload->getFileSystem();
+        $this->filesystem = $upload->getFileSystem();
         $this->pathresolver = $upload->getPathResolver();
 
-        $source_name    = $this->getSluggedFileName($source_name);
+        $source_name = $this->getSluggedFileName($source_name);
         $uniqueFileName = $this->getUniqueFilename($source_name, $type, $index, $content_range);
 
         return $this->getSluggedFileName($uniqueFileName);
@@ -84,7 +84,7 @@ class Slug implements FileNameGenerator
     public function getSluggedFileName($name)
     {
         $fileNameExploded = explode(".", $name);
-        $extension        = array_pop($fileNameExploded);
+        $extension = array_pop($fileNameExploded);
         $fileNameExploded = implode(".", $fileNameExploded);
 
         return $this->slugify($fileNameExploded) . "." . $extension;

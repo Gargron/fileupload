@@ -9,7 +9,7 @@ class FileUploadTest extends TestCase
     public function setUp()
     {
         $playground_path = __DIR__ . '/../playground';
-        $fixtures_path   = __DIR__ . '/../fixtures';
+        $fixtures_path = __DIR__ . '/../fixtures';
 
         if (! is_dir($playground_path)) {
             mkdir($playground_path);
@@ -32,13 +32,13 @@ class FileUploadTest extends TestCase
     {
         $playground_path = __DIR__ . '/../playground';
 
-        $server = array('CONTENT_TYPE' => 'image/jpg', 'CONTENT_LENGTH' => 30321);
-        $file   = array('tmp_name' => $playground_path . '/real-image.jpg', 'name' => 'real-image.jpg', 'size' => 30321, 'type' => 'image/jpg', 'error' => 0);
+        $server = ['CONTENT_TYPE' => 'image/jpg', 'CONTENT_LENGTH' => 30321];
+        $file = ['tmp_name' => $playground_path . '/real-image.jpg', 'name' => 'real-image.jpg', 'size' => 30321, 'type' => 'image/jpg', 'error' => 0];
 
         $filesystem = new FileSystem\Mock();
-        $resolver   = new PathResolver\Simple($playground_path . '/uploaded');
-        $uploader   = new FileUpload($file, $server);
-        $test       = false;
+        $resolver = new PathResolver\Simple($playground_path . '/uploaded');
+        $uploader = new FileUpload($file, $server);
+        $test = false;
 
         $uploader->setPathResolver($resolver);
         $uploader->setFileSystem($filesystem);

@@ -25,9 +25,9 @@ class MimeTypeValidator implements Validator
      * Default error message for this Validator
      * @var array
      */
-    protected $errorMessages = array(
+    protected $errorMessages = [
         self::INVALID_MIMETYPE => "The uploaded filetype (mimetype) is invalid"
-    );
+    ];
 
     public function __construct(array $validMimeTypes)
     {
@@ -51,7 +51,7 @@ class MimeTypeValidator implements Validator
      */
     public function validate(File $file, $currentSize = null)
     {
-        if (!in_array($file->getMimeType(), $this->mimeTypes)) {
+        if (! in_array($file->getMimeType(), $this->mimeTypes)) {
             $this->isValid = false;
             $file->error = $this->errorMessages[self::INVALID_MIMETYPE];
         }

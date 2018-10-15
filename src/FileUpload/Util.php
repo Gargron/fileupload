@@ -20,12 +20,12 @@ class Util
     public static function humanReadableToBytes($input)
     {
         $number = (int)$input;
-        $units = array(
+        $units = [
             'b' => 1,
             'k' => 1024,
             'm' => 1048576,
             'g' => 1073741824
-        );
+        ];
         $unit = strtolower(substr($input, -1));
         if (isset($units[$unit])) {
             return ($number * $units[$unit]);

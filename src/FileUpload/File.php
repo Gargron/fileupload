@@ -33,7 +33,7 @@ class File extends \SplFileInfo
      */
     public $completed = false;
 
-    public function __construct($fileName, $clientFileName='')
+    public function __construct($fileName, $clientFileName = '')
     {
         $this->setMimeType($fileName);
         $this->clientFileName = $clientFileName;
@@ -73,7 +73,7 @@ class File extends \SplFileInfo
     {
         return in_array(
             $this->mimeType,
-            array('image/gif', 'image/jpeg', 'image/pjpeg', 'image/png')
+            ['image/gif', 'image/jpeg', 'image/pjpeg', 'image/png']
         );
     }
 }

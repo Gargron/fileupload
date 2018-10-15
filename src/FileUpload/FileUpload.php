@@ -59,17 +59,17 @@ class FileUpload
      * Validators to be run
      * @var array
      */
-    protected $validators = array();
+    protected $validators = [];
     /**
      * Callbacks to be run
      * @var array
      */
-    protected $callbacks = array();
+    protected $callbacks = [];
     /**
      * Default messages
      * @var array
      */
-    protected $messages = array(
+    protected $messages = [
         // PHP $_FILES-own
         UPLOAD_ERR_INI_SIZE => 'The uploaded file exceeds the upload_max_filesize directive in php.ini',
         UPLOAD_ERR_FORM_SIZE => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form',
@@ -81,7 +81,7 @@ class FileUpload
 
         // Our own
         self::UPLOAD_ERR_PHP_SIZE => 'The upload file exceeds the post_max_size or the upload_max_filesize directives in php.ini',
-    );
+    ];
 
     /**
      * Construct this mother
@@ -104,7 +104,7 @@ class FileUpload
      */
     private function prepareMessages()
     {
-        $prepared = array();
+        $prepared = [];
 
         foreach ($this->messages as $key => $msg) {
             $prepared[(string)$key] = $msg;
@@ -217,16 +217,16 @@ class FileUpload
     {
         $content_range = $this->getContentRange();
         $size = $this->getSize();
-        $this->files = array();
+        $this->files = [];
         $upload = $this->upload;
 
         if ($this->logger) {
-            $this->logger->debug('Processing uploads', array(
+            $this->logger->debug('Processing uploads', [
                 'Content-range' => $content_range,
                 'Size' => $size,
                 'Upload array' => $upload,
                 'Server array' => $this->server,
-            ));
+            ]);
         }
 
         if ($upload && is_array($upload['tmp_name'])) {
@@ -247,7 +247,7 @@ class FileUpload
                 );
             }
         } else {
-            if ($upload && !empty($upload['tmp_name'])) {
+            if ($upload && ! empty($upload['tmp_name'])) {
                 $this->files[] = $this->process(
                     $upload['tmp_name'],
                     $upload['name'],
@@ -270,7 +270,7 @@ class FileUpload
             }
         }
 
-        return array($this->files, $this->getNewHeaders($this->files, $content_range));
+        return [$this->files, $this->getNewHeaders($this->files, $content_range)];
     }
 
     /**
@@ -337,20 +337,20 @@ class FileUpload
                 $file_size = $this->getFilesize($file_path, $append_file);
 
                 if ($this->logger) {
-                    $this->logger->debug('Processing ' . $file->name, array(
+                    $this->logger->debug('Processing ' . $file->name, [
                         'File path' => $file_path,
                         'File object' => $file,
                         'Append to file?' => $append_file,
                         'File exists?' => $this->filesystem->isFile($file_path),
                         'File size' => $file_size,
-                    ));
+                    ]);
                 }
 
                 if ($file->size == $file_size) {
                     // Yay, upload is complete!
                     $completed = true;
                 } else {
-                    if (!$content_range) {
+                    if (! $content_range) {
                         // The file is incomplete and it's not a chunked upload, abort
                         $this->filesystem->unlink($file_path);
                         $file->error = 'abort';
@@ -398,7 +398,7 @@ class FileUpload
     {
         $name = trim(basename(stripslashes($name)), ".\x00..\x20");
 
-        if (!$name) {
+        if (! $name) {
             $name = str_replace('.', '-', microtime(true));
         }
 
@@ -465,7 +465,7 @@ class FileUpload
         // Now that we passed basic, implementation-agnostic tests,
         // let's do custom validators
         foreach ($this->validators as $validator) {
-            if (!$validator->validate($file, $current_size)) {
+            if (! $validator->validate($file, $current_size)) {
                 return false;
             }
         }
@@ -483,7 +483,7 @@ class FileUpload
      */
     protected function processCallbacksFor($eventName, File $file)
     {
-        if (!array_key_exists($eventName, $this->callbacks) || empty($this->callbacks[$eventName])) {
+        if (! array_key_exists($eventName, $this->callbacks) || empty($this->callbacks[$eventName])) {
             return;
         }
 
@@ -574,12 +574,12 @@ class FileUpload
      */
     protected function getNewHeaders(array $files, $content_range)
     {
-        $headers = array(
+        $headers = [
             'pragma' => 'no-cache',
             'cache-control' => 'no-store, no-cache, must-revalidate',
             'content-disposition' => 'inline; filename="files.json"',
             'x-content-type-options' => 'nosniff'
-        );
+        ];
 
         if ($content_range && is_object($files[0]) && isset($files[0]->size) && $files[0]->size) {
             $headers['range'] = '0-' . ($this->fixIntegerOverflow($files[0]->size) - 1);

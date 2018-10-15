@@ -11,7 +11,7 @@ class SimpleTest extends TestCase
     public function setUp()
     {
         $playground_path = __DIR__ . '/../../playground';
-        $fixtures_path   = __DIR__ . '/../../fixtures';
+        $fixtures_path = __DIR__ . '/../../fixtures';
 
         $this->filesystem = new Simple();
 
@@ -39,7 +39,7 @@ class SimpleTest extends TestCase
     public function testWriteToFile()
     {
         $yadda = __DIR__ . '/../../playground/yadda.txt';
-        $path  = __DIR__ . '/../../playground/test.1.txt';
+        $path = __DIR__ . '/../../playground/test.1.txt';
 
         $this->filesystem->writeToFile($path, $this->filesystem->getFileStream($yadda));
         $this->assertEquals(file_get_contents($yadda), file_get_contents($path));
@@ -50,7 +50,7 @@ class SimpleTest extends TestCase
     public function testMoveUploadedFile()
     {
         $yadda = __DIR__ . '/../../playground/yadda.txt';
-        $path  = __DIR__ . '/../../playground/test.2.txt';
+        $path = __DIR__ . '/../../playground/test.2.txt';
 
         $original_yadda = file_get_contents($yadda);
 

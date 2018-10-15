@@ -26,10 +26,10 @@ class SizeValidator implements Validator
      */
     protected $isValid;
 
-    protected $errorMessages = array(
+    protected $errorMessages = [
         self::FILE_SIZE_IS_TOO_LARGE => "The uploaded file is too large",
         self::FILE_SIZE_IS_TOO_SMALL => "The uploaded file is too small"
-    );
+    ];
 
     /**
      * @param int $maxSize
@@ -44,8 +44,8 @@ class SizeValidator implements Validator
 
     /**
      * @param $maxSize
-     * @return int|string
      * @throws \Exception if the max file size is null or equals zero
+     * @return int|string
      */
     public function setMaxSize($maxSize)
     {
@@ -67,8 +67,8 @@ class SizeValidator implements Validator
 
     /**
      * @param $minSize
-     * @return int|string
      * @throws \Exception if the file size is lesser than zero or null
+     * @return int|string
      */
     public function setMinFile($minSize)
     {

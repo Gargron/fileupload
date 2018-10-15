@@ -18,7 +18,7 @@ class DimensionValidator implements Validator
 
     protected $config;
 
-    protected $errorMessages = array(
+    protected $errorMessages = [
 
         self::INVALID_UPLOADED_FILE_TYPE => "Cannot validate the currently uploaded file by it's dimension as it is not an image",
 
@@ -33,7 +33,7 @@ class DimensionValidator implements Validator
         self::MIN_WIDTH => "The uploaded file's width is too small. It should have a minimum height of {value}",
 
         self::MAX_WIDTH => "The uploaded file's width is too large. It should have a maximum height of {value}"
-    );
+    ];
 
     public function __construct(array $config)
     {
@@ -50,7 +50,7 @@ class DimensionValidator implements Validator
     public function validate(File $file, $currentSize = null)
     {
 
-        if (!$file->isImage() || !list($width, $height) = getimagesize($file->getRealPath())) {
+        if (! $file->isImage() || ! list($width, $height) = getimagesize($file->getRealPath())) {
             $file->error = $this->errorMessages[self::INVALID_UPLOADED_FILE_TYPE];
 
             return false;
