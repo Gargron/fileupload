@@ -26,16 +26,16 @@ class Simple implements Validator
      * Error messages
      * @var array
      */
-    protected $messages = array(
+    protected $messages = [
         self::UPLOAD_ERR_BAD_TYPE => 'Filetype not allowed',
         self::UPLOAD_ERR_TOO_LARGE => 'Filesize too large',
-    );
+    ];
 
     /**
      * @param integer $max_size
      * @param array   $allowed_types
      */
-    public function __construct($max_size, array $allowed_types = array())
+    public function __construct($max_size, array $allowed_types = [])
     {
         $this->setMaxSize($max_size);
         $this->allowed_types = $allowed_types;
@@ -75,8 +75,8 @@ class Simple implements Validator
      */
     public function validate(File $file, $current_size = null)
     {
-        if (!empty($this->allowed_types)) {
-            if (!in_array($file->getMimeType(), $this->allowed_types)) {
+        if (! empty($this->allowed_types)) {
+            if (! in_array($file->getMimeType(), $this->allowed_types)) {
                 $file->error = $this->messages[self::UPLOAD_ERR_BAD_TYPE];
 
                 return false;

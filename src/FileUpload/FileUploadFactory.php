@@ -2,8 +2,8 @@
 
 namespace FileUpload;
 
-use FileUpload\PathResolver\PathResolver;
 use FileUpload\FileSystem\FileSystem;
+use FileUpload\PathResolver\PathResolver;
 use FileUpload\Validator\Validator;
 
 class FileUploadFactory
@@ -35,7 +35,7 @@ class FileUploadFactory
     public function __construct(
         PathResolver $pathresolver,
         FileSystem $filesystem,
-        $validators = array()
+        $validators = []
     ) {
         $this->pathresolver = $pathresolver;
         $this->filesystem = $filesystem;

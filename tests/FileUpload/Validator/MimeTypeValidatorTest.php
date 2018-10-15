@@ -3,10 +3,10 @@
 namespace FileUpload\Validator;
 
 use FileUpload\File;
+use PHPUnit\Framework\TestCase;
 
-class MimeTypeValidatorTest extends \PHPUnit_Framework_TestCase
+class MimeTypeValidatorTest extends TestCase
 {
-
     protected $directory;
 
     /**
@@ -16,12 +16,12 @@ class MimeTypeValidatorTest extends \PHPUnit_Framework_TestCase
 
     public function testValidMimeType()
     {
-        $_FILES['file'] = array(
+        $_FILES['file'] = [
             "name" => "real-image.jpg",
             "tmp_name" => $this->directory . 'real-image.jpg',
             "size" => 12,
             "error" => 0
-        );
+        ];
 
         $file = new File($_FILES['file']['tmp_name']);
 
@@ -30,12 +30,12 @@ class MimeTypeValidatorTest extends \PHPUnit_Framework_TestCase
 
     public function testInvalidMimeType()
     {
-        $_FILES['file'] = array(
+        $_FILES['file'] = [
             "name" => "fake-image.jpg",
             "tmp_name" => $this->directory . 'fake-image.jpg',
             "size" => 12,
             "error" => 0
-        );
+        ];
 
         $file = new File($_FILES['file']['tmp_name']);
 
@@ -46,25 +46,25 @@ class MimeTypeValidatorTest extends \PHPUnit_Framework_TestCase
     {
         $this->directory = __DIR__ . '/../../fixtures/';
 
-        $this->validator = new MimeTypeValidator(array("image/jpeg"));
+        $this->validator = new MimeTypeValidator(["image/jpeg"]);
     }
 
     public function testSetErrorMessages()
     {
-        $_FILES['file'] = array(
+        $_FILES['file'] = [
             "name" => "fake-image.jpg",
             "tmp_name" => $this->directory . 'fake-image.jpg',
             "size" => 12,
             "error" => 0
-        );
+        ];
 
         $file = new File($_FILES['file']['tmp_name']);
 
         $errorMessage = "Invalid file type";
 
-        $this->validator->setErrorMessages(array(
+        $this->validator->setErrorMessages([
             0 => $errorMessage
-        ));
+        ]);
 
         $this->validator->validate($file, $_FILES['file']['size']);
 

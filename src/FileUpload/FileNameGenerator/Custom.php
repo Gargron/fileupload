@@ -22,7 +22,7 @@ class Custom implements FileNameGenerator
     public function getFileName($source_name, $type, $tmp_name, $index, $content_range, FileUpload $upload)
     {
 
-        if (is_string($this->generator) && !is_callable($this->generator)) {
+        if (is_string($this->generator) && ! is_callable($this->generator)) {
             return $this->generator;
         }
 

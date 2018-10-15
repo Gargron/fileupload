@@ -9,8 +9,8 @@
 namespace FileUpload\FileNameGenerator;
 
 use FileUpload\FileSystem\FileSystem;
-use FileUpload\PathResolver\PathResolver;
 use FileUpload\FileUpload;
+use FileUpload\PathResolver\PathResolver;
 use FileUpload\Util;
 
 class Simple implements FileNameGenerator

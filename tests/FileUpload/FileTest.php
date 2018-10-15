@@ -2,7 +2,9 @@
 
 namespace FileUpload;
 
-class FileTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class FileTest extends TestCase
 {
     public function testImagePositiveDetermination()
     {

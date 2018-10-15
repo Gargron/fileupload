@@ -3,8 +3,8 @@
 
 namespace FileUpload\FileNameGenerator;
 
-use FileUpload\Util;
 use FileUpload\FileUpload;
+use FileUpload\Util;
 
 class Random implements FileNameGenerator
 {

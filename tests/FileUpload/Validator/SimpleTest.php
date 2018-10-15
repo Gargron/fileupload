@@ -3,8 +3,9 @@
 namespace FileUpload\Validator;
 
 use FileUpload\File;
+use PHPUnit\Framework\TestCase;
 
-class SimpleTest extends \PHPUnit_Framework_TestCase
+class SimpleTest extends TestCase
 {
     public function testExceedSize()
     {
@@ -30,13 +31,12 @@ class SimpleTest extends \PHPUnit_Framework_TestCase
      */
     public function testFailMaxSize1A()
     {
-        $validator = new Simple("1A", array());
+        $validator = new Simple("1A", []);
     }
 
     public function testWrongMime()
     {
-
-        $validator = new Simple("1M", array('image/png'));
+        $validator = new Simple("1M", ['image/png']);
 
         $file = new File($_FILES['file']['tmp_name']);
 
@@ -46,7 +46,7 @@ class SimpleTest extends \PHPUnit_Framework_TestCase
 
     public function testOk()
     {
-        $validator = new Simple("40K", array('image/jpeg'));
+        $validator = new Simple("40K", ['image/jpeg']);
         $file = new File($_FILES['file']['tmp_name']);
 
         $this->assertTrue($validator->validate($file, $_FILES['file']['size']));
@@ -55,16 +55,15 @@ class SimpleTest extends \PHPUnit_Framework_TestCase
 
     public function testSetErrorMessages()
     {
-
         $file = new File($_FILES['file']['tmp_name']);
 
-        $validator = new Simple(10, array('image/png'));
+        $validator = new Simple(10, ['image/png']);
 
         $errorMessage = "Invalid file size";
 
-        $validator->setErrorMessages(array(
+        $validator->setErrorMessages([
             0 => $errorMessage
-        ));
+        ]);
 
         $validator->validate($file, $_FILES['file']['size']);
 
@@ -75,11 +74,11 @@ class SimpleTest extends \PHPUnit_Framework_TestCase
     {
         $this->directory = __DIR__ . '/../../fixtures/';
 
-        $_FILES['file'] = array(
+        $_FILES['file'] = [
             "name" => "real-image.jpg",
             "tmp_name" => $this->directory . 'real-image.jpg',
             "size" => 12,
             "error" => 0
-        );
+        ];
     }
 }

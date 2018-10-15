@@ -5,8 +5,9 @@ namespace FileUpload\FileNameGenerator;
 use FileUpload\FileSystem\Mock;
 use FileUpload\FileUpload;
 use FileUpload\PathResolver\Simple as Path;
+use PHPUnit\Framework\TestCase;
 
-class MD5Test extends \PHPUnit_Framework_TestCase
+class MD5Test extends TestCase
 {
     protected $filesystem;
 
@@ -15,11 +16,11 @@ class MD5Test extends \PHPUnit_Framework_TestCase
         $playground_path = __DIR__ . '/../../playground';
         $fixtures_path = __DIR__ . '/../../fixtures';
 
-        if (!is_dir($playground_path)) {
+        if (! is_dir($playground_path)) {
             mkdir($playground_path);
         }
 
-        if (!is_dir($playground_path . '/uploaded')) {
+        if (! is_dir($playground_path . '/uploaded')) {
             mkdir($playground_path . '/uploaded');
         }
 
@@ -38,29 +39,28 @@ class MD5Test extends \PHPUnit_Framework_TestCase
 
     public function testGenerator()
     {
-
         $generator = new MD5();
         $playground_path = __DIR__ . '/../playground';
 
         $filename = "picture.jpg";
         $new_filename = md5("picture") . ".jpg";
 
-        $server = array('CONTENT_TYPE' => 'image/jpg', 'CONTENT_LENGTH' => 30321);
-        $file = array(
-            'tmp_name' => $playground_path . '/real-image.jpg',
-            'name' => 'real-image.jpg',
-            'size' => 30321,
-            'type' => 'image/jpg',
-            'error' => 0
-        );
+        $server = [ 'CONTENT_TYPE' => 'image/jpg', 'CONTENT_LENGTH' => 30321 ];
+	$file = [ 'tmp_name' => $playground_path . '/real-image.jpg',
+		'name' => 'real-image.jpg',
+		'size' => 30321,
+		'type' => 'image/jpg',
+		'error' => 0
+	];
 
         $fileUpload = new FileUpload($file, $server, $generator);
         $fileUpload->setFileSystem(new Mock());
         $fileUpload->setPathResolver(new Path($playground_path . "/uploaded"));
 
-        $this->assertEquals($generator->getFileName($filename, "image/jpg", "asdf.jpg", 0, "100", $fileUpload),
-            $new_filename);
-
+        $this->assertEquals(
+            $generator->getFileName($filename, "image/jpg", "asdf.jpg", 0, "100", $fileUpload),
+            $new_filename
+        );
     }
 
     public function testUploadFailsBecauseFileAlreadyExistsOnTheFileSystem()
@@ -70,14 +70,13 @@ class MD5Test extends \PHPUnit_Framework_TestCase
 
         $filename = "real-image.jpg";
 
-        $server = array('CONTENT_TYPE' => 'image/jpg', 'CONTENT_LENGTH' => 30321);
-        $file = array(
-            'tmp_name' => $playground_path . '/uploaded/real-image.jpg',
-            'name' => 'real-image.jpg',
-            'size' => 30321,
-            'type' => 'image/jpg',
-            'error' => 0
-        );
+        $server = [ 'CONTENT_TYPE' => 'image/jpg', 'CONTENT_LENGTH' => 30321 ];
+	$file = [ 'tmp_name' => $playground_path . '/uploaded/real-image.jpg',
+		'name' => 'real-image.jpg',
+		'size' => 30321,
+		'type' => 'image/jpg',
+		'error' => 0
+	];
 
         $fileUpload = new FileUpload($file, $server, $generator);
         $fileUpload->setFileSystem(new Mock());
@@ -97,14 +96,13 @@ class MD5Test extends \PHPUnit_Framework_TestCase
         $filename = "real-image.jpg";
         $newFileName = md5("real-image") . '.jpg';
 
-        $server = array('CONTENT_TYPE' => 'image/jpg', 'CONTENT_LENGTH' => 30321);
-        $file = array(
-            'tmp_name' => $playground_path . '/uploaded/real-image.jpg',
-            'name' => 'real-image.jpg',
-            'size' => 30321,
-            'type' => 'image/jpg',
-            'error' => 0
-        );
+        $server = [ 'CONTENT_TYPE' => 'image/jpg', 'CONTENT_LENGTH' => 30321 ];
+	$file = [ 'tmp_name' => $playground_path . '/uploaded/real-image.jpg',
+		'name' => 'real-image.jpg',
+		'size' => 30321,
+		'type' => 'image/jpg',
+		'error' => 0
+	];
 
         $fileUpload = new FileUpload($file, $server, $generator);
         $fileUpload->setFileSystem(new Mock());

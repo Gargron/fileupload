@@ -2,29 +2,28 @@
 
 namespace FileUpload\Validator;
 
-
 use FileUpload\File;
+use PHPUnit\Framework\TestCase;
 
-class DimensionValidatorTest extends \PHPUnit_Framework_TestCase
+class DimensionValidatorTest extends TestCase
 {
-
     protected $directory;
 
     public function testOnlyAnImageCanBeValidated()
     {
-        $_FILES['file'] = array(
+        $_FILES['file'] = [
             "name" => "fake-image.jpg",
             "tmp_name" => $this->directory . 'fake-image.jpg',
             "size" => 12,
             "error" => 0
-        );
+        ];
 
         $file = new File($_FILES['file']['tmp_name']);
 
-        $config = array(
+        $config = [
             'width' => 100,
             'height' => 200
-        );
+        ];
 
         $this->assertFalse(
             $this->createValidator($config)
@@ -44,27 +43,27 @@ class DimensionValidatorTest extends \PHPUnit_Framework_TestCase
 
     public function testValidatorWorksWithTheWidthConfig()
     {
-        $_FILES['file'] = array(
+        $_FILES['file'] = [
             "name" => "real-image.jpg",
             "tmp_name" => $this->directory . 'real-image.jpg',
             "size" => 12,
             "error" => 0
-        );
+        ];
 
         $file = new File($_FILES['file']['tmp_name']);
 
-        $config = array(
+        $config = [
             'width' => 300
-        );
+        ];
 
         $this->assertTrue(
             $this->createValidator($config)
                 ->validate($file, $_FILES['file']['size'])
         );
 
-        $config = array(
+        $config = [
             'width' => 302
-        );
+        ];
 
         $this->assertFalse(
             $this->createValidator($config)
@@ -74,27 +73,27 @@ class DimensionValidatorTest extends \PHPUnit_Framework_TestCase
 
     public function testValidatorWorksWithTheMinimumWidthConfig()
     {
-        $_FILES['file'] = array(
+        $_FILES['file'] = [
             "name" => "real-image.jpg",
             "tmp_name" => $this->directory . 'real-image.jpg',
             "size" => 12,
             "error" => 0
-        );
+        ];
 
         $file = new File($_FILES['file']['tmp_name']);
 
-        $config = array(
+        $config = [
             'min_width' => 200
-        );
+        ];
 
         $this->assertTrue(
             $this->createValidator($config)
                 ->validate($file, $_FILES['file']['size'])
         );
 
-        $config = array(
+        $config = [
             'min_width' => 301
-        );
+        ];
 
         $this->assertFalse(
             $this->createValidator($config)
@@ -104,27 +103,27 @@ class DimensionValidatorTest extends \PHPUnit_Framework_TestCase
 
     public function testValidatorWorksWithTheMaximumWidthConfig()
     {
-        $_FILES['file'] = array(
+        $_FILES['file'] = [
             "name" => "real-image.jpg",
             "tmp_name" => $this->directory . 'real-image.jpg',
             "size" => 12,
             "error" => 0
-        );
+        ];
 
         $file = new File($_FILES['file']['tmp_name']);
 
-        $config = array(
+        $config = [
             'max_width' => 400
-        );
+        ];
 
         $this->assertTrue(
             $this->createValidator($config)
                 ->validate($file, $_FILES['file']['size'])
         );
 
-        $config = array(
+        $config = [
             'max_width' => 250
-        );
+        ];
 
         $this->assertFalse(
             $this->createValidator($config)
@@ -134,19 +133,19 @@ class DimensionValidatorTest extends \PHPUnit_Framework_TestCase
 
     public function testValidatorWorksExpectedlyWithTheWidthAndHeightValues()
     {
-        $_FILES['file'] = array(
+        $_FILES['file'] = [
             "name" => "real-image.jpg",
             "tmp_name" => $this->directory . 'real-image.jpg',
             "size" => 12,
             "error" => 0
-        );
+        ];
 
         $file = new File($_FILES['file']['tmp_name']);
 
-        $config = array(
+        $config = [
             'width' => 300,
             'height' => 300
-        );
+        ];
 
         $this->assertTrue(
             $this->createValidator($config)
@@ -156,27 +155,27 @@ class DimensionValidatorTest extends \PHPUnit_Framework_TestCase
 
     public function testValidatorWorksWithTheHeightConfig()
     {
-        $_FILES['file'] = array(
+        $_FILES['file'] = [
             "name" => "real-image.jpg",
             "tmp_name" => $this->directory . 'real-image.jpg',
             "size" => 12,
             "error" => 0
-        );
+        ];
 
         $file = new File($_FILES['file']['tmp_name']);
 
-        $config = array(
+        $config = [
             'height' => 300
-        );
+        ];
 
         $this->assertTrue(
             $this->createValidator($config)
                 ->validate($file, $_FILES['file']['size'])
         );
 
-        $config = array(
+        $config = [
             'height' => 305
-        );
+        ];
 
         $this->assertFalse(
             $this->createValidator($config)
@@ -186,27 +185,27 @@ class DimensionValidatorTest extends \PHPUnit_Framework_TestCase
 
     public function testValidatorWorksWithTheMinimumHeightConfig()
     {
-        $_FILES['file'] = array(
+        $_FILES['file'] = [
             "name" => "real-image.jpg",
             "tmp_name" => $this->directory . 'real-image.jpg',
             "size" => 12,
             "error" => 0
-        );
+        ];
 
         $file = new File($_FILES['file']['tmp_name']);
 
-        $config = array(
+        $config = [
             'min_height' => 200
-        );
+        ];
 
         $this->assertTrue(
             $this->createValidator($config)
                 ->validate($file, $_FILES['file']['size'])
         );
 
-        $config = array(
+        $config = [
             'min_height' => 301
-        );
+        ];
 
         $this->assertFalse(
             $this->createValidator($config)
@@ -216,27 +215,27 @@ class DimensionValidatorTest extends \PHPUnit_Framework_TestCase
 
     public function testValidatorWorksWithTheMaximumHeightConfig()
     {
-        $_FILES['file'] = array(
+        $_FILES['file'] = [
             "name" => "real-image.jpg",
             "tmp_name" => $this->directory . 'real-image.jpg',
             "size" => 12,
             "error" => 0
-        );
+        ];
 
         $file = new File($_FILES['file']['tmp_name']);
 
-        $config = array(
+        $config = [
             'max_height' => 400
-        );
+        ];
 
         $this->assertTrue(
             $this->createValidator($config)
                 ->validate($file, $_FILES['file']['size'])
         );
 
-        $config = array(
+        $config = [
             'max_height' => 209
-        );
+        ];
 
         $this->assertFalse(
             $this->createValidator($config)
@@ -246,21 +245,21 @@ class DimensionValidatorTest extends \PHPUnit_Framework_TestCase
 
     public function testValidatorWorksAsExpectedWithAllConfigOption()
     {
-        $_FILES['file'] = array(
+        $_FILES['file'] = [
             "name" => "real-image.jpg",
             "tmp_name" => $this->directory . 'real-image.jpg',
             "size" => 12,
             "error" => 0
-        );
+        ];
 
         $file = new File($_FILES['file']['tmp_name']);
 
-        $config = array(
+        $config = [
             'width' => 300,
             'height' => 300,
             'max_width' => 310,
             'max_height' => 350
-        );
+        ];
 
         $this->assertTrue(
             $this->createValidator($config)
@@ -270,26 +269,25 @@ class DimensionValidatorTest extends \PHPUnit_Framework_TestCase
 
     public function testSetErrorMessages()
     {
-
-        $_FILES['file'] = array(
+        $_FILES['file'] = [
             "name" => "real-image.jpg",
             "tmp_name" => $this->directory . 'real-image.jpg',
             "size" => 12,
             "error" => 0
-        );
+        ];
 
         $file = new File($_FILES['file']['tmp_name']);
 
-        $config = array(
+        $config = [
             'width' => 301,
             'height' => 301
-        );
+        ];
 
         $validator = $this->createValidator($config);
 
-        $validator->setErrorMessages(array(
+        $validator->setErrorMessages([
             DimensionValidator::HEIGHT => "Height too large"
-        ));
+        ]);
 
         $validator->validate($file, $_FILES['file']['size']);
 

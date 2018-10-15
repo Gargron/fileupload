@@ -5,10 +5,10 @@ namespace FileUpload\FileNameGenerator;
 use FileUpload\FileSystem\Mock;
 use FileUpload\FileUpload;
 use FileUpload\PathResolver\Simple;
+use PHPUnit\Framework\TestCase;
 
-class CustomTest extends \PHPUnit_Framework_TestCase
+class CustomTest extends TestCase
 {
-
     public function testStringGenerator()
     {
         $customName = "my_file.jpg";
@@ -20,14 +20,13 @@ class CustomTest extends \PHPUnit_Framework_TestCase
         $filename = $customName;
         $new_filename = $customName;
 
-        $server = array('CONTENT_TYPE' => 'image/jpg', 'CONTENT_LENGTH' => 30321);
-        $file = array(
-            'tmp_name' => $playground_path . '/real-image.jpg',
-            'name' => 'real-image.jpg',
-            'size' => 30321,
-            'type' => 'image/jpg',
-            'error' => 0
-        );
+        $server = ['CONTENT_TYPE' => 'image/jpg', 'CONTENT_LENGTH' => 30321 ];
+        $file = [
+          'tmp_name' => $playground_path . '/real-image.jpg',
+          'name' => 'real-image.jpg',
+          'size' => 30321,
+          'type' => 'image/jpg',
+          'error' => 0 ];
 
         $fileUpload = new FileUpload($file, $server, $generator);
 
@@ -35,9 +34,9 @@ class CustomTest extends \PHPUnit_Framework_TestCase
         $fileUpload->setPathResolver(new Simple($playground_path . "/uploaded"));
 
         $this->assertEquals(
-            $generator->getFileName($filename, "image/jpg", "asdf.jpg", 0, "100", $fileUpload), $new_filename
+            $generator->getFileName($filename, "image/jpg", "asdf.jpg", 0, "100", $fileUpload),
+            $new_filename
         );
-
     }
 
     public function testClosureGenerator()
@@ -52,14 +51,13 @@ class CustomTest extends \PHPUnit_Framework_TestCase
 
         $filename = "picture.jpg";
 
-        $server = array('CONTENT_TYPE' => 'image/jpg', 'CONTENT_LENGTH' => 30321);
-        $file = array(
-            'tmp_name' => $playground_path . '/real-image.jpg',
+        $server = [ 'CONTENT_TYPE' => 'image/jpg', 'CONTENT_LENGTH' => 30321 ];
+        $file = ['tmp_name' => $playground_path . '/real-image.jpg',
             'name' => 'real-image.jpg',
             'size' => 30321,
             'type' => 'image/jpg',
             'error' => 0
-        );
+        ];
 
         $fileUpload = new FileUpload($file, $server, $generator);
 
@@ -69,14 +67,15 @@ class CustomTest extends \PHPUnit_Framework_TestCase
         $new_filename = $customName($filename, "image/jpg", "asdf.jpg", 0, "100", $fileUpload);
 
         $this->assertEquals(
-            $generator->getFileName($filename, "image/jpg", "asdf.jpg", 0, "100", $fileUpload), $new_filename
+            $generator->getFileName($filename, "image/jpg", "asdf.jpg", 0, "100", $fileUpload),
+            $new_filename
         );
     }
 
     public function testCallableGenerator()
     {
-
-        function generateName() {
+        function generateName()
+        {
             return func_get_arg(0);
         }
 
@@ -86,14 +85,12 @@ class CustomTest extends \PHPUnit_Framework_TestCase
 
         $filename = "picture.jpg";
 
-        $server = array('CONTENT_TYPE' => 'image/jpg', 'CONTENT_LENGTH' => 30321);
-        $file = array(
-            'tmp_name' => $playground_path . '/real-image.jpg',
+        $server = ['CONTENT_TYPE' => 'image/jpg', 'CONTENT_LENGTH' => 30321];
+        $file = [ 'tmp_name' => $playground_path . '/real-image.jpg',
             'name' => 'real-image.jpg',
             'size' => 30321,
             'type' => 'image/jpg',
-            'error' => 0
-        );
+            'error' => 0];
 
         $fileUpload = new FileUpload($file, $server, $generator);
 
@@ -103,7 +100,8 @@ class CustomTest extends \PHPUnit_Framework_TestCase
         $new_filename = generateName($filename, "image/jpg", "asdf.jpg", 0, "100", $fileUpload);
 
         $this->assertEquals(
-            $generator->getFileName($filename, "image/jpg", "asdf.jpg", 0, "100", $fileUpload), $new_filename
+            $generator->getFileName($filename, "image/jpg", "asdf.jpg", 0, "100", $fileUpload),
+            $new_filename
         );
     }
 }
