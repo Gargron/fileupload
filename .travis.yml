@@ -13,4 +13,4 @@ before_script:
 notifications:
   email: false
 
-script: phpunit
+script: vendor/bin/phpunit
