@@ -70,7 +70,7 @@ class SimpleTest extends TestCase
         $this->assertEquals($errorMessage, $file->error);
     }
 
-    public function setUp()
+    protected function setUp()
     {
         $this->directory = __DIR__ . '/../../fixtures/';
 

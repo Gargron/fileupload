@@ -8,7 +8,7 @@ class SimpleTest extends TestCase
 {
     protected $filesystem;
 
-    public function setUp()
+    protected function setUp()
     {
         $playground_path = __DIR__ . '/../../playground';
         $fixtures_path = __DIR__ . '/../../fixtures';
