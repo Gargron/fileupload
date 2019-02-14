@@ -11,7 +11,7 @@ class MD5Test extends TestCase
 {
     protected $filesystem;
 
-    protected function setUp()
+    public function setUp()
     {
         $playground_path = __DIR__ . '/../../playground';
         $fixtures_path = __DIR__ . '/../../fixtures';

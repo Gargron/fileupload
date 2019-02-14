@@ -297,7 +297,7 @@ class DimensionValidatorTest extends TestCase
         );
     }
 
-    protected function setUp()
+    public function setUp()
     {
         $this->directory = __DIR__ . '/../../fixtures/';
     }

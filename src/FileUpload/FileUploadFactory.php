@@ -36,18 +36,20 @@ class FileUploadFactory
     /**
      * Construct new factory with the given modules
      * @param PathResolver $pathresolver
-     * @param FileSystem   $filesystem
-     * @param array        $validators
+     * @param FileSystem $filesystem
+     * @param array $validators
+     * @param FileNameGenerator\FileNameGenerator|null $fileNameGenerator
      */
     public function __construct(
         PathResolver $pathresolver,
         FileSystem $filesystem,
-        $validators = []
+        $validators = [],
+        FileNameGenerator\FileNameGenerator $fileNameGenerator = null
     ) {
         $this->pathresolver = $pathresolver;
         $this->filesystem = $filesystem;
         $this->validators = $validators;
-        $this->fileNameGenerator = new FileNameGenerator\Simple();
+        $this->fileNameGenerator = $fileNameGenerator;
     }
 
     /**
@@ -61,22 +63,14 @@ class FileUploadFactory
         $fileupload = new FileUpload($upload, $server);
         $fileupload->setPathResolver($this->pathresolver);
         $fileupload->setFileSystem($this->filesystem);
-        $fileupload->setFileNameGenerator($this->fileNameGenerator);
+        if (null !== $this->fileNameGenerator) {
+            $fileupload->setFileNameGenerator($this->fileNameGenerator);
+        }
 
         foreach ($this->validators as $validator) {
             $fileupload->addValidator($validator);
         }
 
         return $fileupload;
-    }
-
-    /**
-     * FileNameGenerator will be used in the factory
-     *
-     * @param FileNameGenerator\FileNameGenerator $generator
-     */
-    public function withFileNameGenerator(FileNameGenerator\FileNameGenerator $generator)
-    {
-        $this->fileNameGenerator = $generator;
     }
 }

@@ -42,7 +42,7 @@ class MimeTypeValidatorTest extends TestCase
         $this->assertFalse($this->validator->validate($file, $_FILES['file']['size']));
     }
 
-    protected function setUp()
+    public function setUp()
     {
         $this->directory = __DIR__ . '/../../fixtures/';
 
