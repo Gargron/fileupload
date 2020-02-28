@@ -56,11 +56,15 @@ class Simple implements FileNameGenerator
      */
     protected function getUniqueFilename($name, $type, $index, $content_range)
     {
+        if (! is_array($content_range)) {
+            $content_range = [0];
+        }
+
         while ($this->filesystem->isDir($this->pathresolver->getUploadPath($name))) {
             $name = $this->pathresolver->upcountName($name);
         }
 
-        $uploaded_bytes = Util::fixIntegerOverflow(intval($content_range[1]));
+        $uploaded_bytes = Util::fixIntegerOverflow(intval($content_range[1] ?? $content_range[0]));
 
         while ($this->filesystem->isFile($this->pathresolver->getUploadPath($name))) {
             if ($uploaded_bytes == $this->filesystem->getFilesize($this->pathresolver->getUploadPath($name))) {
