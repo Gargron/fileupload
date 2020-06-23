@@ -59,11 +59,15 @@ class Slug implements FileNameGenerator
      */
     protected function getUniqueFilename($name, $type, $index, $content_range)
     {
+        if (! is_array($content_range)) {
+            $content_range = [0];
+        }
+
         while ($this->filesystem->isDir($this->pathresolver->getUploadPath($this->getSluggedFileName($name)))) {
             $name = $this->pathresolver->upcountName($name);
         }
 
-        $uploaded_bytes = Util::fixIntegerOverflow(intval($content_range[1]));
+        $uploaded_bytes = Util::fixIntegerOverflow(intval($content_range[1] ?? $content_range[0]));
 
         while ($this->filesystem->isFile($this->pathresolver->getUploadPath($this->getSluggedFileName($name)))) {
             if ($uploaded_bytes == $this->filesystem->getFilesize($this->pathresolver->getUploadPath($this->getSluggedFileName($name)))) {
@@ -107,7 +111,7 @@ class Slug implements FileNameGenerator
         $text = strtolower($text);
         // remove unwanted characters
         $text = preg_replace('~[^-\w]+~', '', $text);
-        
+
         if (empty($text)) {
             return 'n-a';
         }

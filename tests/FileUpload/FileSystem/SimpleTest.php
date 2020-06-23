@@ -8,7 +8,7 @@ class SimpleTest extends TestCase
 {
     protected $filesystem;
 
-    public function setUp()
+    protected function setUp()
     {
         $playground_path = __DIR__ . '/../../playground';
         $fixtures_path = __DIR__ . '/../../fixtures';
@@ -42,7 +42,7 @@ class SimpleTest extends TestCase
         $path = __DIR__ . '/../../playground/test.1.txt';
 
         $this->filesystem->writeToFile($path, $this->filesystem->getFileStream($yadda));
-        $this->assertEquals(file_get_contents($yadda), file_get_contents($path));
+        $this->assertFileEquals($yadda, $path);
 
         $this->filesystem->unlink($path);
     }

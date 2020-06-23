@@ -11,7 +11,7 @@ class SizeValidatorTest extends TestCase
     protected $validator;
     protected $file;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->directory = __DIR__ . '/../../fixtures/';
 

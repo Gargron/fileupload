@@ -3,8 +3,8 @@
   "description": "File uploading library capable of handling large/chunked/multiple file uploads",
   "license": "MIT",
   "autoload": {
-    "psr-0": {
-      "FileUpload\\": "src/"
+    "psr-4": {
+      "FileUpload\\": "src/FileUpload"
     }
   },
   "require": {
