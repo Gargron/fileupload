@@ -2,6 +2,7 @@
 
 namespace FileUpload;
 
+use Exception;
 use PHPUnit\Framework\TestCase;
 
 class FileTest extends TestCase
@@ -15,12 +16,9 @@ class FileTest extends TestCase
         $this->assertEquals('image/jpeg', $file->getMimeType());
     }
 
-
-    /**
-     * @expectedException \Exception
-     */
     public function testCannotGetMimetypeForADirectory()
     {
+        $this->expectException(Exception::class);
         $file = new File(__DIR__ . '/../fixtures');
         $file->getMimeType();
     }

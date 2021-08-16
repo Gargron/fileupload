@@ -2,6 +2,7 @@
 
 namespace FileUpload\Validator;
 
+use Exception;
 use FileUpload\File;
 use PHPUnit\Framework\TestCase;
 
@@ -26,11 +27,9 @@ class SimpleTest extends TestCase
         $this->assertNotEmpty($file->error);
     }
 
-    /**
-     * @expectedException \Exception
-     */
     public function testFailMaxSize1A()
     {
+        $this->expectException(Exception::class);
         $validator = new Simple("1A", []);
     }
 
@@ -70,7 +69,7 @@ class SimpleTest extends TestCase
         $this->assertEquals($errorMessage, $file->error);
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->directory = __DIR__ . '/../../fixtures/';
 

@@ -2,3 +2,5 @@
 /.idea
 index.php
 /uploads
+/.phpunit.result.cache
+/composer.lock

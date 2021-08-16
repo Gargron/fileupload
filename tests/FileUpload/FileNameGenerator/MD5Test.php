@@ -11,7 +11,7 @@ class MD5Test extends TestCase
 {
     protected $filesystem;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $playground_path = __DIR__ . '/../../playground';
         $fixtures_path = __DIR__ . '/../../fixtures';
@@ -27,7 +27,7 @@ class MD5Test extends TestCase
         copy("$fixtures_path/real-image.jpg", "$playground_path/uploaded/real-image.jpg");
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $file = __DIR__ . '/../../playground/';
         $file .= md5(pathinfo('real-image.jpg', PATHINFO_FILENAME)) . '.jpg';
