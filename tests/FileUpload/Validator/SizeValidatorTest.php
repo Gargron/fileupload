@@ -2,6 +2,7 @@
 
 namespace FileUpload\Validator;
 
+use Exception;
 use FileUpload\File;
 use PHPUnit\Framework\TestCase;
 
@@ -11,7 +12,7 @@ class SizeValidatorTest extends TestCase
     protected $validator;
     protected $file;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->directory = __DIR__ . '/../../fixtures/';
 
@@ -94,21 +95,17 @@ class SizeValidatorTest extends TestCase
         $this->assertEquals($fileTooSmall, $file->error);
     }
 
-    /**
-     * @expectedException \Exception
-     * @expectedExceptionMessage Invalid File Max_Size
-     */
     public function testInvalidMaximumFileSize()
     {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage("Invalid File Max_Size");
         $this->validator = new SizeValidator("40A", 3);
     }
 
-    /**
-     * @expectedException \Exception
-     * @expectedExceptionMessage Invalid File Min_Size
-     */
     public function testInvalidMinimumFilesSize()
     {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage("Invalid File Min_Size");
         $this->validator = new SizeValidator("40K", "-3");
     }
 }
