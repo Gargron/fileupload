@@ -67,7 +67,9 @@ class Random implements FileNameGenerator
             $name = $this->generateRandom() . "." . $extension;
         }
 
-        $uploaded_bytes = Util::fixIntegerOverflow(intval($content_range[1]));
+        if (!empty($content_range)) {
+            $uploaded_bytes = Util::fixIntegerOverflow(intval($content_range[1]));
+        }
 
         while ($this->filesystem->isFile($this->pathresolver->getUploadPath($name))) {
             if ($uploaded_bytes == $this->filesystem->getFilesize($this->pathresolver->getUploadPath($name))) {
