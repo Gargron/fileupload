@@ -17,7 +17,7 @@ This package is available via Composer:
 ```json
 {
   "require": {
-    "gargron/fileupload": "~1.4.0"
+    "gargron/fileupload": "~1.5.0"
   }
 }
 ```
@@ -70,7 +70,7 @@ foreach($files as $file){
     //Remeber to check if the upload was completed
     if ($file->completed) {
         echo $file->getRealPath();
-        
+
         // Call any method on an SplFileInfo instance
         var_dump($file->isFile());
     }
@@ -81,11 +81,11 @@ foreach($files as $file){
 
 ```php
 $factory = new FileUploadFactory(
-    new PathResolver\Simple('/my/uploads/dir'), 
-    new FileSystem\Simple(), 
+    new PathResolver\Simple('/my/uploads/dir'),
+    new FileSystem\Simple(),
     [
         new FileUpload\Validator\MimeTypeValidator(['image/png', 'image/jpg']),
-        new FileUpload\Validator\SizeValidator('3M', '1M') 
+        new FileUpload\Validator\SizeValidator('3M', '1M')
         // etc
     ]
 );
@@ -104,7 +104,7 @@ There are currently 4 validators shipped with `FileUpload`:
 
  ```
 
- - `MimeTypeValidator` 
+ - `MimeTypeValidator`
  ```php
  $mimeTypeValidator = new FileUpload\Validator\MimeTypeValidator(['image/png', 'image/jpg']);
  ```
@@ -120,7 +120,7 @@ There are currently 4 validators shipped with `FileUpload`:
  $config = [
       'width' => 400,
       'height' => 500
- ]; 
+ ];
  // Can also contain 'min_width', 'max_width', 'min_height' and 'max_height'
 
  $dimensionValidator = new FileUpload\Validator\DimensionValidator($config);
